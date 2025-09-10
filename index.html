@@ -615,7 +615,7 @@
                 }
             });
 
-            onSnapshot(query(trailersCollectionRef, orderBy('timestamp', 'desc')), (snapshot) => {
+            onSnapshot(query(trailersCollectionRef), (snapshot) => {
                 console.log('snapshot:', snapshot);
                 allTrailersList.innerHTML = '';
                 allEmptyTrailersList.innerHTML = '';
@@ -625,12 +625,33 @@
                 let fullCount = 0;
                 let needsFuelCount = 0;
                 let allTrailers = {};
+                
+                const tenHoursAgo = new Date(Date.now() - 10 * 60 * 60 * 1000);
 
+                let trailers = [];
                 snapshot.forEach(doc => {
                     const trailerData = doc.data();
-                    console.log('trailerData:', trailerData);
-                    const docId = doc.id;
-                    allTrailers[docId] = trailerData;
+                    if (trailerData.timestamp && trailerData.timestamp.toDate() < tenHoursAgo) {
+                        return;
+                    }
+                    trailers.push({ id: doc.id, data: trailerData });
+                    allTrailers[doc.id] = trailerData;
+                });
+
+                trailers.sort((a, b) => {
+                    const spotA = a.data.northFence !== 'None' ? a.data.northFence : a.data.southFence;
+                    const spotB = b.data.northFence !== 'None' ? b.data.northFence : b.data.southFence;
+
+                    if (spotA === 'None' && spotB !== 'None') return 1;
+                    if (spotA !== 'None' && spotB === 'None') return -1;
+                    if (spotA === 'None' && spotB === 'None') return 0;
+
+                    return spotA.localeCompare(spotB, undefined, { numeric: true, sensitivity: 'base' });
+                });
+
+                trailers.forEach(trailer => {
+                    const trailerData = trailer.data;
+                    const docId = trailer.id;
 
                     const details = [
                         trailerData.status,
