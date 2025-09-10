@@ -589,6 +589,7 @@
             trailersCollectionRef = collection(db, `artifacts/${appId}/public/data/trailers`);
 
             onSnapshot(trailersCollectionRef, (snapshot) => {
+                console.log('snapshot:', snapshot);
                 allTrailersList.innerHTML = '';
                 needsFuelList.innerHTML = '';
                 let emptyCount = 0;
@@ -596,9 +597,10 @@
                 let needsFuelCount = 0;
                 let allTrailers = {};
 
-                snapshot.forEach(document => {
-                    const trailerData = document.data();
-                    const docId = document.id;
+                snapshot.forEach(doc => {
+                    const trailerData = doc.data();
+                    console.log('trailerData:', trailerData);
+                    const docId = doc.id;
                     allTrailers[docId] = trailerData;
 
                     const details = [
@@ -630,6 +632,13 @@
                         </div>
                     `;
 
+                    if (trailerData.needsFuel) {
+                        const needsFuelItem = listItem.cloneNode(true);
+                        needsFuelItem.classList.add('needs-fuel');
+                        needsFuelList.appendChild(needsFuelItem);
+                        needsFuelCount++;
+                    }
+
                     allTrailersList.appendChild(listItem);
 
                     if (trailerData.status === 'Empty') {
@@ -637,17 +646,8 @@
                     } else if (trailerData.status === 'Salvage') {
                         salvageCount++;
                     }
-
-                    if (trailerData.needsFuel) {
-                        const needsFuelItem = document.createElement('li');
-                        needsFuelItem.className = `trailer-item needs-fuel ${docId === editingDocId ? 'editing' : ''}`;
-                        needsFuelItem.dataset.docId = docId;
-                        needsFuelItem.dataset.trailerNumber = trailerData.trailerNumber;
-                        needsFuelItem.innerHTML = listItem.innerHTML;
-                        needsFuelList.appendChild(needsFuelItem);
-                        needsFuelCount++;
-                    }
                 });
+                console.log('allTrailers:', allTrailers);
 
                 emptyCountSpan.textContent = `Empty: ${emptyCount}`;
                 salvageCountSpan.textContent = `Salvage: ${salvageCount}`;
@@ -656,6 +656,36 @@
 
                 // Add event listener for edit buttons
                 allTrailersList.querySelectorAll('.edit-button').forEach(button => {
+                    button.addEventListener('click', (event) => {
+                        const docId = event.target.dataset.docId;
+                        const trailerData = allTrailers[docId];
+                        
+                        // Populate form with data
+                        trailerNumberInput.value = trailerData.trailerNumber;
+                        document.querySelector(`input[name="status"][value="${trailerData.status}"]`).checked = true;
+                        needsFuelCheckbox.checked = trailerData.needsFuel;
+                        redTaggedCheckbox.checked = trailerData.redTagged;
+                        seasonalCheckbox.checked = trailerData.seasonal;
+                        palletShuttleCheckbox.checked = trailerData.palletShuttle;
+                        northFenceSelect.value = trailerData.northFence;
+                        southFenceSelect.value = trailerData.southFence;
+
+                        // Set editing state
+                        editingDocId = docId;
+                        addTrailerButton.textContent = 'Update';
+
+                        // Highlight the item being edited
+                        document.querySelectorAll('.trailer-item').forEach(item => {
+                            item.classList.remove('editing');
+                        });
+                        const itemToEdit = document.querySelector(`[data-doc-id="${docId}"]`);
+                        if(itemToEdit) {
+                            itemToEdit.classList.add('editing');
+                        }
+                    });
+                });
+
+                needsFuelList.querySelectorAll('.edit-button').forEach(button => {
                     button.addEventListener('click', (event) => {
                         const docId = event.target.dataset.docId;
                         const trailerData = allTrailers[docId];
@@ -750,7 +780,25 @@
                 }
             });
 
-            document.getElementById('open-camera').addEventListener('click', () => {
+            needsFuelList.addEventListener('click', async (event) => {
+                hideError();
+                if (!isAuthenticated) {
+                    displayError('You are not authenticated. Please try refreshing the page.');
+                    return;
+                }
+                if (event.target.classList.contains('delete-button')) {
+                    const docId = event.target.dataset.docId;
+                    if (docId) {
+                        const docRef = doc(trailersCollectionRef, docId);
+                        try {
+                            await deleteDoc(docRef);
+                            resetForm();
+                        } catch (e) {
+                            console.error("Error deleting document: ", e);
+                            displayError(`Failed to delete trailer: ${e.message}`);
+                        }
+                    }
+                }
             });
         } catch (error) {
             setUIState('disabled');
