@@ -500,9 +500,9 @@
             </ul>
     </div>
 
-    <h2 class="section-title">All Entered Trailers</h2>
+    <h2 class="section-title">All Pallet Shuttle Trailers</h2>
     <div class="trailer-list-container">
-        <ul id="all-trailers-list">
+        <ul id="all-pallet-shuttle-trailers-list">
             </ul>
     </div>
 </div>
@@ -583,9 +583,9 @@
         const salvageCountSpan = document.getElementById('salvage-count');
         const fullCountSpan = document.getElementById('full-count');
         const needsFuelCountSpan = document.getElementById('needs-fuel-count');
-        const allTrailersList = document.getElementById('all-trailers-list');
         const allEmptyTrailersList = document.getElementById('all-empty-trailers-list');
         const allSalvageTrailersList = document.getElementById('all-salvage-trailers-list');
+        const allPalletShuttleTrailersList = document.getElementById('all-pallet-shuttle-trailers-list');
         const needsFuelList = document.getElementById('needs-fuel-list');
         const openCameraButton = document.getElementById('open-camera');
 
@@ -608,11 +608,7 @@
 
             if (openCameraButton) {
                 openCameraButton.addEventListener('click', () => {
-                    if ('BarcodeDetector' in window) {
-                        alert('BarcodeDetector API is available. Opening camera...');
-                    } else {
-                        alert('BarcodeDetector API is not supported in this browser.');
-                    }
+                    alert('Camera feature is not yet implemented.');
                 });
             }
 
@@ -625,9 +621,9 @@
 
             onSnapshot(query(trailersCollectionRef), (snapshot) => {
                 console.log('snapshot:', snapshot);
-                allTrailersList.innerHTML = '';
                 allEmptyTrailersList.innerHTML = '';
                 allSalvageTrailersList.innerHTML = '';
+                allPalletShuttleTrailersList.innerHTML = '';
                 needsFuelList.innerHTML = '';
                 let emptyCount = 0;
                 let salvageCount = 0;
@@ -637,26 +633,15 @@
                 
                 const tenHoursAgo = new Date(Date.now() - 10 * 60 * 60 * 1000);
 
-                let trailers = [];
                 snapshot.forEach(doc => {
                     const trailerData = doc.data();
                     if (trailerData.timestamp && trailerData.timestamp.toDate() < tenHoursAgo) {
                         return;
                     }
-                    trailers.push({ id: doc.id, data: trailerData });
                     allTrailers[doc.id] = trailerData;
                 });
-
-                trailers.sort((a, b) => {
-                    const spotA = a.data.northFence !== 'None' ? a.data.northFence : a.data.southFence;
-                    const spotB = b.data.northFence !== 'None' ? b.data.northFence : b.data.southFence;
-
-                    if (spotA === 'None' && spotB !== 'None') return 1;
-                    if (spotA !== 'None' && spotB === 'None') return -1;
-                    if (spotA === 'None' && spotB === 'None') return 0;
-
-                    return spotA.localeCompare(spotB, undefined, { numeric: true, sensitivity: 'base' });
-                });
+                
+                const trailers = Object.keys(allTrailers).map(id => ({ id, data: allTrailers[id] }));
 
                 trailers.forEach(trailer => {
                     const trailerData = trailer.data;
@@ -694,8 +679,10 @@
                         return listItem;
                     };
 
-                    const listItem = createListItem(docId, trailerData, details);
-                    allTrailersList.appendChild(listItem);
+                    if (trailerData.palletShuttle) {
+                        const palletShuttleItem = createListItem(docId, trailerData, details);
+                        allPalletShuttleTrailersList.appendChild(palletShuttleItem);
+                    }
 
                     if (trailerData.status === 'Empty') {
                         emptyCount++;
@@ -761,9 +748,9 @@
                     });
                 };
                 
-                addEditAndDeleteListeners(allTrailersList);
                 addEditAndDeleteListeners(allEmptyTrailersList);
                 addEditAndDeleteListeners(allSalvageTrailersList);
+                addEditAndDeleteListeners(allPalletShuttleTrailersList);
                 addEditAndDeleteListeners(needsFuelList);
 
             }, (error) => {
