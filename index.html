@@ -575,6 +575,26 @@
         document.querySelectorAll('.trailer-item').forEach(item => item.classList.remove('editing'));
     };
 
+    const getSortableValue = (trailerData) => {
+        const nf = trailerData.northFence;
+        const sf = trailerData.southFence;
+        const fenceLine = nf !== 'None' ? nf : sf;
+
+        if (fenceLine === 'None') {
+            return [false, '', 0];
+        }
+
+        const parts = fenceLine.split(' ');
+        if (parts.length === 1 && !isNaN(parts[0])) {
+            return [true, 'NF', parseInt(parts[0], 10)];
+        }
+        
+        const numericPart = parts.pop();
+        const prefix = parts.join(' ');
+        
+        return [true, prefix, parseInt(numericPart, 10)];
+    };
+
     document.addEventListener('DOMContentLoaded', async () => {
         const trailerNumberInput = document.getElementById('trailer-number');
         const needsFuelCheckbox = document.getElementById('needs-fuel');
@@ -627,7 +647,6 @@
             });
 
             onSnapshot(query(trailersCollectionRef), (snapshot) => {
-                console.log('snapshot:', snapshot);
                 allEmptyTrailersList.innerHTML = '';
                 allSalvageTrailersList.innerHTML = '';
                 allPalletShuttleTrailersList.innerHTML = '';
@@ -650,6 +669,20 @@
                 });
                 
                 const trailers = Object.keys(allTrailers).map(id => ({ id, data: allTrailers[id] }));
+
+                // Sort trailers by parking spot
+                trailers.sort((a, b) => {
+                    const [isAssignedA, prefixA, numA] = getSortableValue(a.data);
+                    const [isAssignedB, prefixB, numB] = getSortableValue(b.data);
+
+                    if (isAssignedA !== isAssignedB) {
+                        return isAssignedB - isAssignedA;
+                    }
+                    if (prefixA !== prefixB) {
+                        return prefixA.localeCompare(prefixB);
+                    }
+                    return numA - numB;
+                });
 
                 trailers.forEach(trailer => {
                     const trailerData = trailer.data;
