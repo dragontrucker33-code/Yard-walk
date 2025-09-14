@@ -488,6 +488,12 @@
             </ul>
     </div>
 
+    <h2 class="section-title">All Salvage Trailers</h2>
+    <div class="trailer-list-container">
+        <ul id="all-salvage-trailers-list">
+            </ul>
+    </div>
+
     <h2 class="section-title">All Empty Trailers</h2>
     <div class="trailer-list-container">
         <ul id="all-empty-trailers-list">
@@ -579,6 +585,7 @@
         const needsFuelCountSpan = document.getElementById('needs-fuel-count');
         const allTrailersList = document.getElementById('all-trailers-list');
         const allEmptyTrailersList = document.getElementById('all-empty-trailers-list');
+        const allSalvageTrailersList = document.getElementById('all-salvage-trailers-list');
         const needsFuelList = document.getElementById('needs-fuel-list');
         const openCameraButton = document.getElementById('open-camera');
 
@@ -620,6 +627,7 @@
                 console.log('snapshot:', snapshot);
                 allTrailersList.innerHTML = '';
                 allEmptyTrailersList.innerHTML = '';
+                allSalvageTrailersList.innerHTML = '';
                 needsFuelList.innerHTML = '';
                 let emptyCount = 0;
                 let salvageCount = 0;
@@ -695,6 +703,8 @@
                         allEmptyTrailersList.appendChild(emptyListItem);
                     } else if (trailerData.status === 'Salvage') {
                         salvageCount++;
+                        const salvageListItem = createListItem(docId, trailerData, details);
+                        allSalvageTrailersList.appendChild(salvageListItem);
                     } else if (trailerData.status === 'Full') {
                         fullCount++;
                     }
@@ -753,6 +763,7 @@
                 
                 addEditAndDeleteListeners(allTrailersList);
                 addEditAndDeleteListeners(allEmptyTrailersList);
+                addEditAndDeleteListeners(allSalvageTrailersList);
                 addEditAndDeleteListeners(needsFuelList);
 
             }, (error) => {
@@ -807,3 +818,4 @@
 
 </body>
 </html>
+
