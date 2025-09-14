@@ -505,6 +505,12 @@
         <ul id="all-pallet-shuttle-trailers-list">
             </ul>
     </div>
+    
+    <h2 class="section-title">All Seasonal Trailers</h2>
+    <div class="trailer-list-container">
+        <ul id="all-seasonal-trailers-list">
+            </ul>
+    </div>
 </div>
 
 <script type="module">
@@ -586,6 +592,7 @@
         const allEmptyTrailersList = document.getElementById('all-empty-trailers-list');
         const allSalvageTrailersList = document.getElementById('all-salvage-trailers-list');
         const allPalletShuttleTrailersList = document.getElementById('all-pallet-shuttle-trailers-list');
+        const allSeasonalTrailersList = document.getElementById('all-seasonal-trailers-list');
         const needsFuelList = document.getElementById('needs-fuel-list');
         const openCameraButton = document.getElementById('open-camera');
 
@@ -624,6 +631,7 @@
                 allEmptyTrailersList.innerHTML = '';
                 allSalvageTrailersList.innerHTML = '';
                 allPalletShuttleTrailersList.innerHTML = '';
+                allSeasonalTrailersList.innerHTML = '';
                 needsFuelList.innerHTML = '';
                 let emptyCount = 0;
                 let salvageCount = 0;
@@ -682,6 +690,11 @@
                     if (trailerData.palletShuttle) {
                         const palletShuttleItem = createListItem(docId, trailerData, details);
                         allPalletShuttleTrailersList.appendChild(palletShuttleItem);
+                    }
+                    
+                    if (trailerData.seasonal) {
+                        const seasonalItem = createListItem(docId, trailerData, details);
+                        allSeasonalTrailersList.appendChild(seasonalItem);
                     }
 
                     if (trailerData.status === 'Empty') {
@@ -751,6 +764,7 @@
                 addEditAndDeleteListeners(allEmptyTrailersList);
                 addEditAndDeleteListeners(allSalvageTrailersList);
                 addEditAndDeleteListeners(allPalletShuttleTrailersList);
+                addEditAndDeleteListeners(allSeasonalTrailersList);
                 addEditAndDeleteListeners(needsFuelList);
 
             }, (error) => {
