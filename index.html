@@ -1,1218 +1,1479 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Yard Walk Web App</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #0c152a;
-            color: #ffffff;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 10vh;
-            padding: 2rem 1rem;
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: #0c152a;
+        color: #ffffff;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-height: 10vh;
+        padding: 2rem 1rem;
+      }
+      .container {
+        width: 100%;
+        max-width: 600px;
+        background-color: #121f3a;
+        padding: 2rem;
+        border-radius: 1rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        margin-bottom: 2rem;
+      }
+      .title {
+        font-size: 2rem;
+        font-weight: bold;
+        text-align: center;
+        margin-bottom: 2rem;
+      }
+      .section-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        color: #b0e0e6;
+        border-bottom: 2px solid #2e88a3;
+        padding-bottom: 0.5rem;
+      }
+      .button {
+        width: 100%;
+        padding: 0.75rem;
+        border-radius: 0.5rem;
+        background-color: #2e88a3;
+        color: #ffffff;
+        font-weight: 500;
+        text-align: center;
+        transition: background-color 0.2s;
+      }
+      .button:hover:not(.disabled) {
+        background-color: #246e85;
+      }
+      .button.disabled {
+        background-color: #4b5563;
+        cursor: not-allowed;
+      }
+      .input-group {
+        margin-bottom: 1.5rem;
+      }
+      .input-label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+      }
+      .input-field {
+        width: 100%;
+        padding: 0.75rem;
+        background-color: #1e2a4a;
+        border: 1px solid #33415c;
+        border-radius: 0.5rem;
+        color: #ffffff;
+      }
+      .radio-group,
+      .checkbox-group {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-around;
+        gap: 1.5rem;
+        margin-top: 0.5rem;
+      }
+      .radio-label,
+      .checkbox-label {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        cursor: pointer;
+      }
+      .trailer-list-container {
+        max-height: 300px;
+        overflow-y: auto;
+        border: 1px solid #33415c;
+        border-radius: 0.5rem;
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+      }
+      .trailer-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem;
+        background-color: #1e2a4a;
+        border-radius: 0.5rem;
+        margin-bottom: 1rem;
+        word-break: break-all;
+      }
+      .trailer-item.editing {
+        outline: 2px solid #b0e0e6;
+        outline-offset: 4px;
+      }
+      .trailer-info {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+      }
+      .trailer-number {
+        font-weight: 600;
+        font-size: 1.1rem;
+      }
+      .delete-button,
+      .edit-button {
+        background-color: transparent;
+        border: none;
+        cursor: pointer;
+        font-size: 1.25rem;
+        transition: color 0.2s;
+        margin-left: 0.5rem;
+      }
+      .delete-button {
+        color: #fca5a5;
+      }
+      .edit-button {
+        color: #b0e0e6;
+      }
+      .delete-button:hover {
+        color: #ef4444;
+      }
+      .edit-button:hover {
+        color: #2e88a3;
+      }
+      .open-camera-button {
+        padding: 0.75rem 1.5rem;
+        background-color: #2e88a3;
+        color: white;
+        border-radius: 0.5rem;
+        cursor: pointer;
+        font-weight: 500;
+        display: block;
+        margin: 0 auto 2rem auto;
+        border: none;
+        transition: background-color 0.2s;
+      }
+      #loading-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.7);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+      }
+      .loader {
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid #3498db;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        animation: spin 1s linear infinite;
+      }
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
         }
-        .container {
-            width: 100%;
-            max-width: 600px;
-            background-color: #121f3a;
-            padding: 2rem;
-            border-radius: 1rem;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            margin-bottom: 2rem;
+        100% {
+          transform: rotate(360deg);
         }
-        .title {
-            font-size: 2rem;
-            font-weight: bold;
-            text-align: center;
-            margin-bottom: 2rem;
+      }
+      #error-message {
+        color: #fca5a5;
+        font-weight: 600;
+        text-align: center;
+        margin-bottom: 1rem;
+        padding: 1rem;
+        background-color: #3f0909;
+        border-radius: 0.5rem;
+        display: none;
+      }
+      #last-entered-window {
+        margin-top: 1rem;
+        padding: 1rem;
+        background-color: #1e2a4a;
+        border: 1px solid #33415c;
+        border-radius: 0.5rem;
+        text-align: center;
+        color: #92d0ff;
+        display: none;
+      }
+      .needs-fuel {
+        background-color: #3f0909;
+        border: 1px solid #ef4444;
+      }
+      .needs-fuel-count {
+        color: #ef4444;
+        font-weight: bold;
+      }
+
+      :root {
+        --glow-hue: 220;
+        --glow-saturation: 80%;
+        --glow-lightness: 55%;
+        --glow-alpha: 0.15;
+        --glow-blur: 15px;
+        --glow-spread: 5px;
+        --glow-color: hsla(
+          var(--glow-hue),
+          var(--glow-saturation),
+          var(--glow-lightness),
+          var(--glow-alpha)
+        );
+        --glow-color-darker: hsla(
+          var(--glow-hue),
+          var(--glow-saturation),
+          35%,
+          var(--glow-alpha)
+        );
+        --accent-hue: 220;
+        --accent-saturation: 95%;
+        --accent-lightness: 60%;
+        --accent-alpha: 1;
+        --accent-color: hsla(
+          var(--accent-hue),
+          var(--accent-saturation),
+          var(--accent-lightness),
+          var(--accent-alpha)
+        );
+        --accent-color-darker: hsla(
+          var(--accent-hue),
+          var(--accent-saturation),
+          40%,
+          var(--accent-alpha)
+        );
+        --accent-color-transparent: hsla(
+          var(--accent-hue),
+          var(--accent-saturation),
+          var(--accent-lightness),
+          0
+        );
+        --accent-color-semitransparent: hsla(
+          var(--accent-hue),
+          var(--accent-saturation),
+          var(--accent-lightness),
+          0.5
+        );
+        --text-color: hsl(var(--accent-hue), 80%, 85%);
+        --bg-color: hsl(220, 20%, 10%);
+        --border-color: hsla(var(--accent-hue), 20%, 70%, 0.3);
+        --border-color-active: hsla(var(--accent-hue), 80%, 70%, 0.7);
+        --scan-color: var(--accent-color);
+        --scan-speed: 1.5s;
+        --scan-delay: 0s;
+        --particle-color: var(--accent-color);
+        --particle-speed: 3s;
+        --particle-delay: 0s;
+        --cube-color: var(--accent-color);
+        --cube-speed: 10s;
+        --cube-delay: 0s;
+        --ring-color: var(--accent-color);
+        --ring-speed: 2s;
+        --ring-delay: 0s;
+        --spectrum-color: var(--accent-color);
+        --spectrum-speed: 0.7s;
+        --spectrum-delay: 0s;
+        --chip-color: var(--accent-color);
+        --chip-bg-color: hsla(
+          var(--accent-hue),
+          var(--accent-saturation),
+          var(--accent-lightness),
+          0.1
+        );
+      }
+
+      .checkbox-container {
+        position: relative;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        color: var(--text-color);
+        cursor: pointer;
+      }
+
+      .holo-checkbox-input {
+        position: absolute;
+        opacity: 0;
+        width: 100%;
+        height: 100%;
+        cursor: pointer;
+      }
+
+      .holo-checkbox {
+        position: relative;
+        width: 40px;
+        height: 40px;
+        perspective: 400px;
+      }
+
+      .holo-box {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        border: 2px solid var(--border-color);
+        border-radius: 8px;
+        transition: border-color 0.3s ease;
+      }
+
+      .holo-inner {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background-color: var(--glow-color-darker);
+        border-radius: 6px;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+
+      .scan-effect {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          to bottom,
+          transparent,
+          var(--scan-color),
+          transparent
+        );
+        opacity: 0;
+        animation: scan var(--scan-speed) linear infinite;
+        animation-delay: var(--scan-delay);
+        border-radius: 8px;
+      }
+
+      .holo-particles {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+      }
+
+      .holo-particle {
+        position: absolute;
+        width: 3px;
+        height: 3px;
+        background-color: var(--particle-color);
+        border-radius: 50%;
+        opacity: 0;
+        animation: particle-float var(--particle-speed) linear infinite;
+        animation-delay: var(--particle-delay);
+      }
+
+      .activation-rings {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+      }
+
+      .activation-ring {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        border: 2px solid var(--ring-color);
+        border-radius: 50%;
+        opacity: 0;
+        transform: scale(0.5);
+        animation: ring-expand var(--ring-speed) ease-out infinite;
+        animation-delay: var(--ring-delay);
+      }
+
+      .cube-transform {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        transform-style: preserve-3d;
+        animation: cube-rotate var(--cube-speed) linear infinite;
+        animation-delay: var(--cube-delay);
+      }
+
+      .cube-face {
+        position: absolute;
+        width: 40px;
+        height: 40px;
+        border: 2px solid var(--cube-color);
+        background-color: hsla(
+          var(--accent-hue),
+          var(--accent-saturation),
+          var(--accent-lightness),
+          0.1
+        );
+        opacity: 0.5;
+      }
+
+      .corner-accent {
+        position: absolute;
+        width: 10px;
+        height: 10px;
+        border-style: solid;
+        border-color: var(--accent-color);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+
+      .holo-glow {
+        position: absolute;
+        top: -5px;
+        left: -5px;
+        right: -5px;
+        bottom: -5px;
+        background-color: var(--glow-color);
+        filter: blur(var(--glow-blur));
+        border-radius: 12px;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+
+      .status-text {
+        font-size: 1rem;
+        font-weight: bold;
+        transition: color 0.3s ease;
+      }
+
+      .frequency-spectrum {
+        position: absolute;
+        bottom: -20px;
+        left: 0;
+        width: 100%;
+        height: 15px;
+        display: flex;
+        justify-content: space-between;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+
+      .frequency-bar {
+        width: 3%;
+        height: 100%;
+        background-color: var(--spectrum-color);
+        animation: spectrum-dance var(--spectrum-speed) linear infinite;
+        animation-delay: var(--spectrum-delay);
+      }
+
+      .data-chips {
+        position: absolute;
+        top: 50%;
+        left: 110%;
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+
+      .data-chip {
+        padding: 2px 8px;
+        background-color: var(--chip-bg-color);
+        color: var(--chip-color);
+        border-radius: 4px;
+        font-size: 0.7rem;
+        white-space: nowrap;
+      }
+
+      /* Checked states */
+      .holo-checkbox-input:checked ~ .holo-checkbox .holo-box {
+        border-color: var(--border-color-active);
+      }
+
+      .holo-checkbox-input:checked ~ .holo-checkbox .holo-inner {
+        opacity: 1;
+      }
+
+      .holo-checkbox-input:checked ~ .holo-checkbox .scan-effect {
+        opacity: 1;
+      }
+
+      .holo-checkbox-input:checked
+        ~ .holo-checkbox
+        .holo-particles
+        .holo-particle {
+        opacity: 1;
+      }
+
+      .holo-checkbox-input:checked
+        ~ .holo-checkbox
+        .activation-rings
+        .activation-ring {
+        opacity: 1;
+      }
+
+      .holo-checkbox-input:checked ~ .holo-checkbox .cube-transform {
+        animation-play-state: running;
+      }
+
+      .holo-checkbox-input:checked ~ .holo-checkbox .corner-accent {
+        opacity: 1;
+      }
+
+      .holo-checkbox-input:checked ~ .holo-checkbox .holo-glow {
+        opacity: 1;
+      }
+
+      .holo-checkbox-input:checked ~ .status-text {
+        color: var(--accent-color);
+      }
+
+      .holo-checkbox-input:checked ~ .frequency-spectrum {
+        opacity: 1;
+      }
+
+      .holo-checkbox-input:checked ~ .data-chips {
+        opacity: 1;
+      }
+
+      /* Positioning */
+      .corner-accent:nth-of-type(1) {
+        top: -2px;
+        left: -2px;
+        border-width: 2px 0 0 2px;
+        border-top-left-radius: 8px;
+      }
+      .corner-accent:nth-of-type(2) {
+        top: -2px;
+        right: -2px;
+        border-width: 2px 2px 0 0;
+        border-top-right-radius: 8px;
+      }
+      .corner-accent:nth-of-type(3) {
+        bottom: -2px;
+        left: -2px;
+        border-width: 0 0 2px 2px;
+        border-bottom-left-radius: 8px;
+      }
+      .corner-accent:nth-of-type(4) {
+        bottom: -2px;
+        right: -2px;
+        border-width: 0 2px 2px 0;
+        border-bottom-right-radius: 8px;
+      }
+
+      .cube-face:nth-child(1) {
+        transform: rotateY(0deg) translateZ(20px);
+      }
+      .cube-face:nth-child(2) {
+        transform: rotateY(90deg) translateZ(20px);
+      }
+      .cube-face:nth-child(3) {
+        transform: rotateY(180deg) translateZ(20px);
+      }
+      .cube-face:nth-child(4) {
+        transform: rotateY(-90deg) translateZ(20px);
+      }
+      .cube-face:nth-child(5) {
+        transform: rotateX(90deg) translateZ(20px);
+      }
+      .cube-face:nth-child(6) {
+        transform: rotateX(-90deg) translateZ(20px);
+      }
+
+      /* Animations */
+      @keyframes scan {
+        0% {
+          transform: translateY(-100%);
         }
-        .section-title {
-            font-size: 1.5rem;
-            font-weight: 600;
-            margin-bottom: 1rem;
-            color: #b0e0e6;
-            border-bottom: 2px solid #2e88a3;
-            padding-bottom: 0.5rem;
+        100% {
+          transform: translateY(100%);
         }
-        .button {
-            width: 100%;
-            padding: 0.75rem;
-            border-radius: 0.5rem;
-            background-color: #2e88a3;
-            color: #ffffff;
-            font-weight: 500;
-            text-align: center;
-            transition: background-color 0.2s;
+      }
+
+      @keyframes particle-float {
+        0% {
+          transform: translate(0, 0);
+          opacity: 0;
         }
-        .button:hover:not(.disabled) {
-            background-color: #246e85;
+        25% {
+          opacity: 1;
         }
-        .button.disabled {
-            background-color: #4b5563;
-            cursor: not-allowed;
+        75% {
+          opacity: 1;
         }
-        .input-group {
-            margin-bottom: 1.5rem;
+        100% {
+          transform: translate(var(--x-end), var(--y-end));
+          opacity: 0;
         }
-        .input-label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
+      }
+
+      @keyframes ring-expand {
+        0% {
+          transform: scale(0.5);
+          opacity: 1;
         }
-        .input-field {
-            width: 100%;
-            padding: 0.75rem;
-            background-color: #1e2a4a;
-            border: 1px solid #33415c;
-            border-radius: 0.5rem;
-            color: #ffffff;
+        100% {
+          transform: scale(1.5);
+          opacity: 0;
         }
-        .radio-group, .checkbox-group {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1.5rem;
-            margin-top: 0.5rem;
+      }
+
+      @keyframes cube-rotate {
+        from {
+          transform: rotateX(0deg) rotateY(0deg);
         }
-        .radio-label, .checkbox-label {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            cursor: pointer;
+        to {
+          transform: rotateX(360deg) rotateY(360deg);
         }
-        .trailer-list-container {
-            max-height: 300px;
-            overflow-y: auto;
-            border: 1px solid #33415c;
-            border-radius: 0.5rem;
-            padding: 1rem;
-            margin-bottom: 1.5rem;
+      }
+
+      @keyframes spectrum-dance {
+        0%,
+        100% {
+          transform: scaleY(0.1);
         }
-        .trailer-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem;
-            background-color: #1e2a4a;
-            border-radius: 0.5rem;
-            margin-bottom: 1rem;
-            word-break: break-all;
+        50% {
+          transform: scaleY(1);
         }
-        .trailer-item.editing {
-            outline: 2px solid #b0e0e6;
-            outline-offset: 4px;
-        }
-        .trailer-info {
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 0.25rem;
-        }
-        .trailer-number {
-            font-weight: 600;
-            font-size: 1.1rem;
-        }
-        .delete-button, .edit-button {
-            background-color: transparent;
-            border: none;
-            cursor: pointer;
-            font-size: 1.25rem;
-            transition: color 0.2s;
-            margin-left: 0.5rem;
-        }
-        .delete-button {
-            color: #fca5a5;
-        }
-        .edit-button {
-            color: #b0e0e6;
-        }
-        .delete-button:hover {
-            color: #ef4444;
-        }
-        .edit-button:hover {
-            color: #2e88a3;
-        }
-        .open-camera-button {
-            padding: 0.75rem 1.5rem;
-            background-color: #2e88a3;
-            color: white;
-            border-radius: 0.5rem;
-            cursor: pointer;
-            font-weight: 500;
-            display: block;
-            margin: 0 auto 2rem auto;
-            border: none;
-            transition: background-color 0.2s;
-        }
-        #loading-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.7);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-        }
-        .loader {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #3498db;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        #error-message {
-            color: #fca5a5;
-            font-weight: 600;
-            text-align: center;
-            margin-bottom: 1rem;
-            padding: 1rem;
-            background-color: #3f0909;
-            border-radius: 0.5rem;
-            display: none;
-        }
-        #last-entered-window {
-            margin-top: 1rem;
-            padding: 1rem;
-            background-color: #1e2a4a;
-            border: 1px solid #33415c;
-            border-radius: 0.5rem;
-            text-align: center;
-            color: #92d0ff;
-            display: none;
-        }
-        .needs-fuel {
-            background-color: #3f0909;
-            border: 1px solid #ef4444;
-        }
-        .needs-fuel-count {
-            color: #ef4444;
-            font-weight: bold;
-        }
+      }
 
-:root {
-  --glow-hue: 220;
-  --glow-saturation: 80%;
-  --glow-lightness: 55%;
-  --glow-alpha: 0.15;
-  --glow-blur: 15px;
-  --glow-spread: 5px;
-  --glow-color: hsla(var(--glow-hue), var(--glow-saturation), var(--glow-lightness), var(--glow-alpha));
-  --glow-color-darker: hsla(var(--glow-hue), var(--glow-saturation), 35%, var(--glow-alpha));
-  --accent-hue: 220;
-  --accent-saturation: 95%;
-  --accent-lightness: 60%;
-  --accent-alpha: 1;
-  --accent-color: hsla(var(--accent-hue), var(--accent-saturation), var(--accent-lightness), var(--accent-alpha));
-  --accent-color-darker: hsla(var(--accent-hue), var(--accent-saturation), 40%, var(--accent-alpha));
-  --accent-color-transparent: hsla(var(--accent-hue), var(--accent-saturation), var(--accent-lightness), 0);
-  --accent-color-semitransparent: hsla(var(--accent-hue), var(--accent-saturation), var(--accent-lightness), 0.5);
-  --text-color: hsl(var(--accent-hue), 80%, 85%);
-  --bg-color: hsl(220, 20%, 10%);
-  --border-color: hsla(var(--accent-hue), 20%, 70%, 0.3);
-  --border-color-active: hsla(var(--accent-hue), 80%, 70%, 0.7);
-  --scan-color: var(--accent-color);
-  --scan-speed: 1.5s;
-  --scan-delay: 0s;
-  --particle-color: var(--accent-color);
-  --particle-speed: 3s;
-  --particle-delay: 0s;
-  --cube-color: var(--accent-color);
-  --cube-speed: 10s;
-  --cube-delay: 0s;
-  --ring-color: var(--accent-color);
-  --ring-speed: 2s;
-  --ring-delay: 0s;
-  --spectrum-color: var(--accent-color);
-  --spectrum-speed: 0.7s;
-  --spectrum-delay: 0s;
-  --chip-color: var(--accent-color);
-  --chip-bg-color: hsla(var(--accent-hue), var(--accent-saturation), var(--accent-lightness), 0.1);
-}
+      /* Particle positions */
+      .holo-particle:nth-child(1) {
+        --x-end: 20px;
+        --y-end: -30px;
+        animation-duration: 2.3s;
+      }
+      .holo-particle:nth-child(2) {
+        --x-end: 40px;
+        --y-end: 10px;
+        animation-duration: 2.8s;
+      }
+      .holo-particle:nth-child(3) {
+        --x-end: -20px;
+        --y-end: 20px;
+        animation-duration: 2.5s;
+      }
+      .holo-particle:nth-child(4) {
+        --x-end: -30px;
+        --y-end: -10px;
+        animation-duration: 3s;
+      }
+      .holo-particle:nth-child(5) {
+        --x-end: 10px;
+        --y-end: 30px;
+        animation-duration: 2.2s;
+      }
+      .holo-particle:nth-child(6) {
+        --x-end: -10px;
+        --y-end: -20px;
+        animation-duration: 2.7s;
+      }
 
-.checkbox-container {
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  color: var(--text-color);
-  cursor: pointer;
-}
+      /* Ring delays */
+      .activation-ring:nth-child(2) {
+        animation-delay: 0.5s;
+      }
+      .activation-ring:nth-child(3) {
+        animation-delay: 1s;
+      }
 
-.holo-checkbox-input {
-  position: absolute;
-  opacity: 0;
-  width: 100%;
-  height: 100%;
-  cursor: pointer;
-}
+      /* Spectrum delays */
+      .frequency-bar:nth-child(2) {
+        animation-delay: 0.1s;
+      }
+      .frequency-bar:nth-child(3) {
+        animation-delay: 0.2s;
+      }
+      .frequency-bar:nth-child(4) {
+        animation-delay: 0.3s;
+      }
+      .frequency-bar:nth-child(5) {
+        animation-delay: 0.4s;
+      }
+      .frequency-bar:nth-child(6) {
+        animation-delay: 0.5s;
+      }
+      .frequency-bar:nth-child(7) {
+        animation-delay: 0.6s;
+      }
+      .frequency-bar:nth-child(8) {
+        animation-delay: 0.7s;
+      }
+      .frequency-bar:nth-child(9) {
+        animation-delay: 0.8s;
+      }
+      .frequency-bar:nth-child(10) {
+        animation-delay: 0.9s;
+      }
+      .frequency-bar:nth-child(11) {
+        animation-delay: 1s;
+      }
+      .frequency-bar:nth-child(12) {
+        animation-delay: 1.1s;
+      }
+      .frequency-bar:nth-child(13) {
+        animation-delay: 1.2s;
+      }
+      .frequency-bar:nth-child(14) {
+        animation-delay: 1.3s;
+      }
+      .frequency-bar:nth-child(15) {
+        animation-delay: 1.4s;
+      }
+      .frequency-bar:nth-child(16) {
+        animation-delay: 1.5s;
+      }
+      .frequency-bar:nth-child(17) {
+        animation-delay: 1.6s;
+      }
+      .frequency-bar:nth-child(18) {
+        animation-delay: 1.7s;
+      }
+      .frequency-bar:nth-child(19) {
+        animation-delay: 1.8s;
+      }
+      .frequency-bar:nth-child(20) {
+        animation-delay: 1.9s;
+      }
 
-.holo-checkbox {
-  position: relative;
-  width: 40px;
-  height: 40px;
-  perspective: 400px;
-}
+      .radio-input {
+        display: flex;
+        flex-direction: row;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+        font-size: 16px;
+        font-weight: 600;
+        justify-content: space-evenly;
+        width: 100%;
+      }
 
-.holo-box {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  border: 2px solid var(--border-color);
-  border-radius: 8px;
-  transition: border-color 0.3s ease;
-}
+      .radio-input .label {
+        display: flex;
+        align-items: center;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        margin: 5px;
+        cursor: pointer;
+        transition: all 0.2s ease-in-out;
+      }
 
-.holo-inner {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  background-color: var(--glow-color-darker);
-  border-radius: 6px;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
+      .radio-input .label:hover {
+        background-color: #eee;
+      }
 
-.scan-effect {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(to bottom, transparent, var(--scan-color), transparent);
-  opacity: 0;
-  animation: scan var(--scan-speed) linear infinite;
-  animation-delay: var(--scan-delay);
-  border-radius: 8px;
-}
+      .radio-input .label .text {
+        margin-left: 1px;
+      }
 
-.holo-particles {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-}
+      .radio-input input[type="radio"] {
+        display: none;
+      }
 
-.holo-particle {
-  position: absolute;
-  width: 3px;
-  height: 3px;
-  background-color: var(--particle-color);
-  border-radius: 50%;
-  opacity: 0;
-  animation: particle-float var(--particle-speed) linear infinite;
-  animation-delay: var(--particle-delay);
-}
-
-.activation-rings {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-}
-
-.activation-ring {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  border: 2px solid var(--ring-color);
-  border-radius: 50%;
-  opacity: 0;
-  transform: scale(0.5);
-  animation: ring-expand var(--ring-speed) ease-out infinite;
-  animation-delay: var(--ring-delay);
-}
-
-.cube-transform {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  transform-style: preserve-3d;
-  animation: cube-rotate var(--cube-speed) linear infinite;
-  animation-delay: var(--cube-delay);
-}
-
-.cube-face {
-  position: absolute;
-  width: 40px;
-  height: 40px;
-  border: 2px solid var(--cube-color);
-  background-color: hsla(var(--accent-hue), var(--accent-saturation), var(--accent-lightness), 0.1);
-  opacity: 0.5;
-}
-
-.corner-accent {
-  position: absolute;
-  width: 10px;
-  height: 10px;
-  border-style: solid;
-  border-color: var(--accent-color);
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.holo-glow {
-  position: absolute;
-  top: -5px;
-  left: -5px;
-  right: -5px;
-  bottom: -5px;
-  background-color: var(--glow-color);
-  filter: blur(var(--glow-blur));
-  border-radius: 12px;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.status-text {
-  font-size: 1rem;
-  font-weight: bold;
-  transition: color 0.3s ease;
-}
-
-.frequency-spectrum {
-  position: absolute;
-  bottom: -20px;
-  left: 0;
-  width: 100%;
-  height: 15px;
-  display: flex;
-  justify-content: space-between;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.frequency-bar {
-  width: 3%;
-  height: 100%;
-  background-color: var(--spectrum-color);
-  animation: spectrum-dance var(--spectrum-speed) linear infinite;
-  animation-delay: var(--spectrum-delay);
-}
-
-.data-chips {
-  position: absolute;
-  top: 50%;
-  left: 110%;
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.data-chip {
-  padding: 2px 8px;
-  background-color: var(--chip-bg-color);
-  color: var(--chip-color);
-  border-radius: 4px;
-  font-size: 0.7rem;
-  white-space: nowrap;
-}
-
-/* Checked states */
-.holo-checkbox-input:checked ~ .holo-checkbox .holo-box {
-  border-color: var(--border-color-active);
-}
-
-.holo-checkbox-input:checked ~ .holo-checkbox .holo-inner {
-  opacity: 1;
-}
-
-.holo-checkbox-input:checked ~ .holo-checkbox .scan-effect {
-  opacity: 1;
-}
-
-.holo-checkbox-input:checked ~ .holo-checkbox .holo-particles .holo-particle {
-  opacity: 1;
-}
-
-.holo-checkbox-input:checked ~ .holo-checkbox .activation-rings .activation-ring {
-  opacity: 1;
-}
-
-.holo-checkbox-input:checked ~ .holo-checkbox .cube-transform {
-  animation-play-state: running;
-}
-
-.holo-checkbox-input:checked ~ .holo-checkbox .corner-accent {
-  opacity: 1;
-}
-
-.holo-checkbox-input:checked ~ .holo-checkbox .holo-glow {
-  opacity: 1;
-}
-
-.holo-checkbox-input:checked ~ .status-text {
-  color: var(--accent-color);
-}
-
-.holo-checkbox-input:checked ~ .frequency-spectrum {
-  opacity: 1;
-}
-
-.holo-checkbox-input:checked ~ .data-chips {
-  opacity: 1;
-}
-
-/* Positioning */
-.corner-accent:nth-of-type(1) { top: -2px; left: -2px; border-width: 2px 0 0 2px; border-top-left-radius: 8px; }
-.corner-accent:nth-of-type(2) { top: -2px; right: -2px; border-width: 2px 2px 0 0; border-top-right-radius: 8px; }
-.corner-accent:nth-of-type(3) { bottom: -2px; left: -2px; border-width: 0 0 2px 2px; border-bottom-left-radius: 8px; }
-.corner-accent:nth-of-type(4) { bottom: -2px; right: -2px; border-width: 0 2px 2px 0; border-bottom-right-radius: 8px; }
-
-.cube-face:nth-child(1) { transform: rotateY(0deg) translateZ(20px); }
-.cube-face:nth-child(2) { transform: rotateY(90deg) translateZ(20px); }
-.cube-face:nth-child(3) { transform: rotateY(180deg) translateZ(20px); }
-.cube-face:nth-child(4) { transform: rotateY(-90deg) translateZ(20px); }
-.cube-face:nth-child(5) { transform: rotateX(90deg) translateZ(20px); }
-.cube-face:nth-child(6) { transform: rotateX(-90deg) translateZ(20px); }
-
-/* Animations */
-@keyframes scan {
-  0% { transform: translateY(-100%); }
-  100% { transform: translateY(100%); }
-}
-
-@keyframes particle-float {
-  0% { transform: translate(0, 0); opacity: 0; }
-  25% { opacity: 1; }
-  75% { opacity: 1; }
-  100% { transform: translate(var(--x-end), var(--y-end)); opacity: 0; }
-}
-
-@keyframes ring-expand {
-  0% { transform: scale(0.5); opacity: 1; }
-  100% { transform: scale(1.5); opacity: 0; }
-}
-
-@keyframes cube-rotate {
-  from { transform: rotateX(0deg) rotateY(0deg); }
-  to { transform: rotateX(360deg) rotateY(360deg); }
-}
-
-@keyframes spectrum-dance {
-  0%, 100% { transform: scaleY(0.1); }
-  50% { transform: scaleY(1); }
-}
-
-/* Particle positions */
-.holo-particle:nth-child(1) { --x-end: 20px; --y-end: -30px; animation-duration: 2.3s; }
-.holo-particle:nth-child(2) { --x-end: 40px; --y-end: 10px; animation-duration: 2.8s; }
-.holo-particle:nth-child(3) { --x-end: -20px; --y-end: 20px; animation-duration: 2.5s; }
-.holo-particle:nth-child(4) { --x-end: -30px; --y-end: -10px; animation-duration: 3s; }
-.holo-particle:nth-child(5) { --x-end: 10px; --y-end: 30px; animation-duration: 2.2s; }
-.holo-particle:nth-child(6) { --x-end: -10px; --y-end: -20px; animation-duration: 2.7s; }
-
-/* Ring delays */
-.activation-ring:nth-child(2) { animation-delay: 0.5s; }
-.activation-ring:nth-child(3) { animation-delay: 1s; }
-
-/* Spectrum delays */
-.frequency-bar:nth-child(2) { animation-delay: 0.1s; }
-.frequency-bar:nth-child(3) { animation-delay: 0.2s; }
-.frequency-bar:nth-child(4) { animation-delay: 0.3s; }
-.frequency-bar:nth-child(5) { animation-delay: 0.4s; }
-.frequency-bar:nth-child(6) { animation-delay: 0.5s; }
-.frequency-bar:nth-child(7) { animation-delay: 0.6s; }
-.frequency-bar:nth-child(8) { animation-delay: 0.7s; }
-.frequency-bar:nth-child(9) { animation-delay: 0.8s; }
-.frequency-bar:nth-child(10) { animation-delay: 0.9s; }
-.frequency-bar:nth-child(11) { animation-delay: 1s; }
-.frequency-bar:nth-child(12) { animation-delay: 1.1s; }
-.frequency-bar:nth-child(13) { animation-delay: 1.2s; }
-.frequency-bar:nth-child(14) { animation-delay: 1.3s; }
-.frequency-bar:nth-child(15) { animation-delay: 1.4s; }
-.frequency-bar:nth-child(16) { animation-delay: 1.5s; }
-.frequency-bar:nth-child(17) { animation-delay: 1.6s; }
-.frequency-bar:nth-child(18) { animation-delay: 1.7s; }
-.frequency-bar:nth-child(19) { animation-delay: 1.8s; }
-.frequency-bar:nth-child(20) { animation-delay: 1.9s; }
-
-.radio-input {
-  display: flex;
-  flex-direction: row;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-  font-size: 16px;
-  font-weight: 600;
-  justify-content: space-evenly;
-  width: 100%;
-}
-
-.radio-input .label {
-  display: flex;
-  align-items: center;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  margin: 5px;
-  cursor: pointer;
-  transition: all 0.2s ease-in-out;
-}
-
-.radio-input .label:hover {
-  background-color: #eee;
-}
-
-.radio-input .label .text {
-  margin-left: 1px;
-}
-
-.radio-input input[type="radio"] {
-  display: none;
-}
-
-.radio-input input[type="radio"]:checked + .text {
-  color: #333;
-  font-weight: 900;
-}
+      .radio-input input[type="radio"]:checked + .text {
+        color: #333;
+        font-weight: 900;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
+    <div id="loading-overlay">
+      <div class="loader"></div>
+    </div>
 
-<div id="loading-overlay">
-    <div class="loader"></div>
-</div>
+    <div class="container">
+      <h1 class="title">Yard Walk</h1>
 
-<div class="container">
-    <h1 class="title">Yard Walk</h1>
+      <div id="error-message"></div>
 
-    <div id="error-message"></div>
+      <button id="open-camera" class="open-camera-button">Open Camera</button>
 
-    <button id="open-camera" class="open-camera-button">Open Camera</button>
-
-    <div class="input-group">
+      <div class="input-group">
         <label for="trailer-number" class="input-label">Trailer Number</label>
-        <input type="text" id="trailer-number" class="input-field" placeholder="Enter Trailer Number">
-    </div>
-
-    <div class="input-group">
-        <div class="radio-input">
-      <label class="label">
         <input
-          type="radio"
-          id="value-1"
-          checked=""
-          name="status"
-          value="Empty"
+          type="text"
+          id="trailer-number"
+          class="input-field"
+          placeholder="Enter Trailer Number"
         />
-        <p class="text">Empty</p>
-      </label>
-      <label class="label">
-        <input type="radio" id="value-2" name="status" value="Salvage" />
-        <p class="text">Salvage</p>
-      </label>
-      <label class="label">
-        <input type="radio" id="value-3" name="status" value="Full" />
-        <p class="text">Full</p>
-      </label>
-    </div>
-    </div>
+      </div>
 
-    <div class="input-group">
-        <div class="checkbox-group">
-            <div class="checkbox-container">
-              <input class="holo-checkbox-input" id="needs-fuel" type="checkbox" />
-              <label class="holo-checkbox" for="needs-fuel">
-                <div class="holo-box">
-                  <div class="holo-inner"></div>
-                  <div class="scan-effect"></div>
-                  <div class="holo-particles">
-                    <div class="holo-particle"></div>
-                    <div class="holo-particle"></div>
-                    <div class="holo-particle"></div>
-                    <div class="holo-particle"></div>
-                    <div class="holo-particle"></div>
-                    <div class="holo-particle"></div>
-                  </div>
-                  <div class="activation-rings">
-                    <div class="activation-ring"></div>
-                    <div class="activation-ring"></div>
-                    <div class="activation-ring"></div>
-                  </div>
-                  <div class="cube-transform">
-                    <div class="cube-face"></div>
-                    <div class="cube-face"></div>
-                    <div class="cube-face"></div>
-                    <div class="cube-face"></div>
-                    <div class="cube-face"></div>
-                    <div class="cube-face"></div>
-                  </div>
-                </div>
-                <div class="corner-accent"></div>
-                <div class="corner-accent"></div>
-                <div class="corner-accent"></div>
-                <div class="corner-accent"></div>
-                <div class="holo-glow"></div>
-              </label>
-              <div class="status-text">Needs Fuel?</div>
-            </div>
-            <div class="checkbox-container">
-              <input class="holo-checkbox-input" id="red-tagged" type="checkbox" />
-              <label class="holo-checkbox" for="red-tagged">
-                <div class="holo-box">
-                  <div class="holo-inner"></div>
-                  <div class="scan-effect"></div>
-                  <div class="holo-particles">
-                    <div class="holo-particle"></div>
-                    <div class="holo-particle"></div>
-                    <div class="holo-particle"></div>
-                    <div class="holo-particle"></div>
-                    <div class="holo-particle"></div>
-                    <div class="holo-particle"></div>
-                  </div>
-                  <div class="activation-rings">
-                    <div class="activation-ring"></div>
-                    <div class="activation-ring"></div>
-                    <div class="activation-ring"></div>
-                  </div>
-                  <div class="cube-transform">
-                    <div class="cube-face"></div>
-                    <div class="cube-face"></div>
-                    <div class="cube-face"></div>
-                    <div class="cube-face"></div>
-                    <div class="cube-face"></div>
-                    <div class="cube-face"></div>
-                  </div>
-                </div>
-                <div class="corner-accent"></div>
-                <div class="corner-accent"></div>
-                <div class="corner-accent"></div>
-                <div class="corner-accent"></div>
-                <div class="holo-glow"></div>
-              </label>
-              <div class="status-text">Red Tagged?</div>
-            </div>
-            <div class="checkbox-container">
-              <input class="holo-checkbox-input" id="seasonal" type="checkbox" />
-              <label class="holo-checkbox" for="seasonal">
-                <div class="holo-box">
-                  <div class="holo-inner"></div>
-                  <div class="scan-effect"></div>
-                  <div class="holo-particles">
-                    <div class="holo-particle"></div>
-                    <div class="holo-particle"></div>
-                    <div class="holo-particle"></div>
-                    <div class="holo-particle"></div>
-                    <div class="holo-particle"></div>
-                    <div class="holo-particle"></div>
-                  </div>
-                  <div class="activation-rings">
-                    <div class="activation-ring"></div>
-                    <div class="activation-ring"></div>
-                    <div class="activation-ring"></div>
-                  </div>
-                  <div class="cube-transform">
-                    <div class="cube-face"></div>
-                    <div class="cube-face"></div>
-                    <div class="cube-face"></div>
-                    <div class="cube-face"></div>
-                    <div class="cube-face"></div>
-                    <div class="cube-face"></div>
-                  </div>
-                </div>
-                <div class="corner-accent"></div>
-                <div class="corner-accent"></div>
-                <div class="corner-accent"></div>
-                <div class="corner-accent"></div>
-                <div class="holo-glow"></div>
-              </label>
-              <div class="status-text">Seasonal?</div>
-            </div>
-            <div class="checkbox-container">
-              <input class="holo-checkbox-input" id="pallet-shuttle" type="checkbox" />
-              <label class="holo-checkbox" for="pallet-shuttle">
-                <div class="holo-box">
-                  <div class="holo-inner"></div>
-                  <div class="scan-effect"></div>
-                  <div class="holo-particles">
-                    <div class="holo-particle"></div>
-                    <div class="holo-particle"></div>
-                    <div class="holo-particle"></div>
-                    <div class="holo-particle"></div>
-                    <div class="holo-particle"></div>
-                    <div class="holo-particle"></div>
-                  </div>
-                  <div class="activation-rings">
-                    <div class="activation-ring"></div>
-                    <div class="activation-ring"></div>
-                    <div class="activation-ring"></div>
-                  </div>
-                  <div class="cube-transform">
-                    <div class="cube-face"></div>
-                    <div class="cube-face"></div>
-                    <div class="cube-face"></div>
-                    <div class="cube-face"></div>
-                    <div class="cube-face"></div>
-                    <div class="cube-face"></div>
-                  </div>
-                </div>
-                <div class="corner-accent"></div>
-                <div class="corner-accent"></div>
-                <div class="corner-accent"></div>
-                <div class="corner-accent"></div>
-                <div class="holo-glow"></div>
-              </label>
-              <div class="status-text">Pallet Shuttle?</div>
-            </div>
+      <div class="input-group">
+        <div class="radio-input">
+          <label class="label">
+            <input
+              type="radio"
+              id="value-1"
+              checked=""
+              name="status"
+              value="Empty"
+            />
+            <p class="text">Empty</p>
+          </label>
+          <label class="label">
+            <input type="radio" id="value-2" name="status" value="Salvage" />
+            <p class="text">Salvage</p>
+          </label>
+          <label class="label">
+            <input type="radio" id="value-3" name="status" value="Full" />
+            <p class="text">Full</p>
+          </label>
         </div>
-    </div>
+      </div>
 
-    <div class="input-group">
-        <label for="north-fence-line" class="input-label">North Fence Line</label>
+      <div class="input-group">
+        <div class="checkbox-group">
+          <div class="checkbox-container">
+            <input
+              class="holo-checkbox-input"
+              id="needs-fuel"
+              type="checkbox"
+            />
+            <label class="holo-checkbox" for="needs-fuel">
+              <div class="holo-box">
+                <div class="holo-inner"></div>
+                <div class="scan-effect"></div>
+                <div class="holo-particles">
+                  <div class="holo-particle"></div>
+                  <div class="holo-particle"></div>
+                  <div class="holo-particle"></div>
+                  <div class="holo-particle"></div>
+                  <div class="holo-particle"></div>
+                  <div class="holo-particle"></div>
+                </div>
+                <div class="activation-rings">
+                  <div class="activation-ring"></div>
+                  <div class="activation-ring"></div>
+                  <div class="activation-ring"></div>
+                </div>
+                <div class="cube-transform">
+                  <div class="cube-face"></div>
+                  <div class="cube-face"></div>
+                  <div class="cube-face"></div>
+                  <div class="cube-face"></div>
+                  <div class="cube-face"></div>
+                  <div class="cube-face"></div>
+                </div>
+              </div>
+              <div class="corner-accent"></div>
+              <div class="corner-accent"></div>
+              <div class="corner-accent"></div>
+              <div class="corner-accent"></div>
+              <div class="holo-glow"></div>
+            </label>
+            <div class="status-text">Needs Fuel?</div>
+          </div>
+          <div class="checkbox-container">
+            <input
+              class="holo-checkbox-input"
+              id="red-tagged"
+              type="checkbox"
+            />
+            <label class="holo-checkbox" for="red-tagged">
+              <div class="holo-box">
+                <div class="holo-inner"></div>
+                <div class="scan-effect"></div>
+                <div class="holo-particles">
+                  <div class="holo-particle"></div>
+                  <div class="holo-particle"></div>
+                  <div class="holo-particle"></div>
+                  <div class="holo-particle"></div>
+                  <div class="holo-particle"></div>
+                  <div class="holo-particle"></div>
+                </div>
+                <div class="activation-rings">
+                  <div class="activation-ring"></div>
+                  <div class="activation-ring"></div>
+                  <div class="activation-ring"></div>
+                </div>
+                <div class="cube-transform">
+                  <div class="cube-face"></div>
+                  <div class="cube-face"></div>
+                  <div class="cube-face"></div>
+                  <div class="cube-face"></div>
+                  <div class="cube-face"></div>
+                  <div class="cube-face"></div>
+                </div>
+              </div>
+              <div class="corner-accent"></div>
+              <div class="corner-accent"></div>
+              <div class="corner-accent"></div>
+              <div class="corner-accent"></div>
+              <div class="holo-glow"></div>
+            </label>
+            <div class="status-text">Red Tagged?</div>
+          </div>
+          <div class="checkbox-container">
+            <input class="holo-checkbox-input" id="seasonal" type="checkbox" />
+            <label class="holo-checkbox" for="seasonal">
+              <div class="holo-box">
+                <div class="holo-inner"></div>
+                <div class="scan-effect"></div>
+                <div class="holo-particles">
+                  <div class="holo-particle"></div>
+                  <div class="holo-particle"></div>
+                  <div class="holo-particle"></div>
+                  <div class="holo-particle"></div>
+                  <div class="holo-particle"></div>
+                  <div class="holo-particle"></div>
+                </div>
+                <div class="activation-rings">
+                  <div class="activation-ring"></div>
+                  <div class="activation-ring"></div>
+                  <div class="activation-ring"></div>
+                </div>
+                <div class="cube-transform">
+                  <div class="cube-face"></div>
+                  <div class="cube-face"></div>
+                  <div class="cube-face"></div>
+                  <div class="cube-face"></div>
+                  <div class="cube-face"></div>
+                  <div class="cube-face"></div>
+                </div>
+              </div>
+              <div class="corner-accent"></div>
+              <div class="corner-accent"></div>
+              <div class="corner-accent"></div>
+              <div class="corner-accent"></div>
+              <div class="holo-glow"></div>
+            </label>
+            <div class="status-text">Seasonal?</div>
+          </div>
+          <div class="checkbox-container">
+            <input
+              class="holo-checkbox-input"
+              id="pallet-shuttle"
+              type="checkbox"
+            />
+            <label class="holo-checkbox" for="pallet-shuttle">
+              <div class="holo-box">
+                <div class="holo-inner"></div>
+                <div class="scan-effect"></div>
+                <div class="holo-particles">
+                  <div class="holo-particle"></div>
+                  <div class="holo-particle"></div>
+                  <div class="holo-particle"></div>
+                  <div class="holo-particle"></div>
+                  <div class="holo-particle"></div>
+                  <div class="holo-particle"></div>
+                </div>
+                <div class="activation-rings">
+                  <div class="activation-ring"></div>
+                  <div class="activation-ring"></div>
+                  <div class="activation-ring"></div>
+                </div>
+                <div class="cube-transform">
+                  <div class="cube-face"></div>
+                  <div class="cube-face"></div>
+                  <div class="cube-face"></div>
+                  <div class="cube-face"></div>
+                  <div class="cube-face"></div>
+                  <div class="cube-face"></div>
+                </div>
+              </div>
+              <div class="corner-accent"></div>
+              <div class="corner-accent"></div>
+              <div class="corner-accent"></div>
+              <div class="corner-accent"></div>
+              <div class="holo-glow"></div>
+            </label>
+            <div class="status-text">Pallet Shuttle?</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label for="north-fence-line" class="input-label"
+          >North Fence Line</label
+        >
         <select id="north-fence-line" class="input-field">
-            <option value="None">None</option>
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5">5</option>
-            <option value="6">6</option>
-            <option value="7">7</option>
-            <option value="8">8</option>
-            <option value="9">9</option>
-            <option value="10">10</option>
-            <option value="11">11</option>
-            <option value="12">12</option>
-            <option value="13">13</option>
-            <option value="14">14</option>
-            <option value="15">15</option>
-            <option value="16">16</option>
-            <option value="17">17</option>
-            <option value="18">18</option>
-            <option value="19">19</option>
-            <option value="20">20</option>
-            <option value="21">21</option>
-            <option value="22">22</option>
-            <option value="23">23</option>
-            <option value="24">24</option>
-            <option value="25">25</option>
-            <option value="26">26</option>
-            <option value="27">27</option>
-            <option value="28">28</option>
-            <option value="29">29</option>
-            <option value="30">30</option>
-            <option value="31">31</option>
-            <option value="32">32</option>
-            <option value="33">33</option>
-            <option value="34">34</option>
-            <option value="35">35</option>
-            <option value="36">36</option>
-            <option value="37">37</option>
-            <option value="38">38</option>
-            <option value="39">39</option>
-            <option value="40">40</option>
-            <option value="41">41</option>
-            <option value="42">42</option>
-            <option value="43">43</option>
-            <option value="44">44</option>
-            <option value="45">45</option>
-            <option value="46">46</option>
-            <option value="47">47</option>
-            <option value="48">48</option>
-            <option value="49">49</option>
-            <option value="50">50</option>
-            <option value="51">51</option>
-            <option value="52">52</option>
-            <option value="53">53</option>
-            <option value="54">54</option>
-            <option value="55">55</option>
-            <option value="56">56</option>
-            <option value="B 1">B-NF 1</option>
-            <option value="B 2">B-NF 2</option>
-            <option value="WT 1">WT 1</option>
-            <option value="WT 2">WT 2</option>
-            <option value="WT 3">WT 3</option>
-            <option value="WT 4">WT 4</option>
-            <option value="WT 5">WT 5</option>
-            <option value="TA 1">TA 1</option>
-            <option value="TA 2">TA 2</option>
-            <option value="TA 3">TA 3</option>
-            <option value="TA 4">TA 4</option>
-            <option value="TA 5">TA 5</option>
-            <option value="TA 6">TA 6</option>
-            <option value="Curb 1">Curb 1</option>
-            <option value="Curb 2">Curb 2</option>
-            <option value="Curb 3">Curb 3</option>
-            <option value="Curb 4">Curb 4</option>
-            <option value="Curb 5">Curb 5</option>
-            <option value="Curb 6">Curb 6</option>
-            <option value="NP 1">NP-NF 1</option>
-            <option value="NP 2">NP-NF 2</option>
+          <option value="None">None</option>
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+          <option value="6">6</option>
+          <option value="7">7</option>
+          <option value="8">8</option>
+          <option value="9">9</option>
+          <option value="10">10</option>
+          <option value="11">11</option>
+          <option value="12">12</option>
+          <option value="13">13</option>
+          <option value="14">14</option>
+          <option value="15">15</option>
+          <option value="16">16</option>
+          <option value="17">17</option>
+          <option value="18">18</option>
+          <option value="19">19</option>
+          <option value="20">20</option>
+          <option value="21">21</option>
+          <option value="22">22</option>
+          <option value="23">23</option>
+          <option value="24">24</option>
+          <option value="25">25</option>
+          <option value="26">26</option>
+          <option value="27">27</option>
+          <option value="28">28</option>
+          <option value="29">29</option>
+          <option value="30">30</option>
+          <option value="31">31</option>
+          <option value="32">32</option>
+          <option value="33">33</option>
+          <option value="34">34</option>
+          <option value="35">35</option>
+          <option value="36">36</option>
+          <option value="37">37</option>
+          <option value="38">38</option>
+          <option value="39">39</option>
+          <option value="40">40</option>
+          <option value="41">41</option>
+          <option value="42">42</option>
+          <option value="43">43</option>
+          <option value="44">44</option>
+          <option value="45">45</option>
+          <option value="46">46</option>
+          <option value="47">47</option>
+          <option value="48">48</option>
+          <option value="49">49</option>
+          <option value="50">50</option>
+          <option value="51">51</option>
+          <option value="52">52</option>
+          <option value="53">53</option>
+          <option value="54">54</option>
+          <option value="55">55</option>
+          <option value="56">56</option>
+          <option value="B 1">B-NF 1</option>
+          <option value="B 2">B-NF 2</option>
+          <option value="WT 1">WT 1</option>
+          <option value="WT 2">WT 2</option>
+          <option value="WT 3">WT 3</option>
+          <option value="WT 4">WT 4</option>
+          <option value="WT 5">WT 5</option>
+          <option value="TA 1">TA 1</option>
+          <option value="TA 2">TA 2</option>
+          <option value="TA 3">TA 3</option>
+          <option value="TA 4">TA 4</option>
+          <option value="TA 5">TA 5</option>
+          <option value="TA 6">TA 6</option>
+          <option value="Curb 1">Curb 1</option>
+          <option value="Curb 2">Curb 2</option>
+          <option value="Curb 3">Curb 3</option>
+          <option value="Curb 4">Curb 4</option>
+          <option value="Curb 5">Curb 5</option>
+          <option value="Curb 6">Curb 6</option>
+          <option value="NP 1">NP-NF 1</option>
+          <option value="NP 2">NP-NF 2</option>
         </select>
-    </div>
+      </div>
 
-    <div class="input-group">
-        <label for="south-fence-line" class="input-label">South Fence Line</label>
+      <div class="input-group">
+        <label for="south-fence-line" class="input-label"
+          >South Fence Line</label
+        >
         <select id="south-fence-line" class="input-field">
-            <option value="None">None</option>
-            <option value="301">301</option>
-            <option value="302">302</option>
-            <option value="303">303</option>
-            <option value="304">304</option>
-            <option value="305">305</option>
-            <option value="306">306</option>
-            <option value="307">307</option>
-            <option value="308">308</option>
-            <option value="309">309</option>
-            <option value="310">310</option>
-            <option value="311">311</option>
-            <option value="312">312</option>
-            <option value="313">313</option>
-            <option value="314">314</option>
-            <option value="315">315</option>
-            <option value="316">316</option>
-            <option value="317">317</option>
-            <option value="318">318</option>
-            <option value="319">319</option>
-            <option value="320">320</option>
-            <option value="321">321</option>
-            <option value="322">322</option>
-            <option value="323">323</option>
-            <option value="324">324</option>
-            <option value="325">325</option>
-            <option value="326">326</option>
-            <option value="327">327</option>
-            <option value="328">328</option>
-            <option value="329">329</option>
-            <option value="330">330</option>
-            <option value="331">331</option>
-            <option value="332">332</option>
-            <option value="333">333</option>
-            <option value="334">334</option>
-            <option value="335">335</option>
-            <option value="336">336</option>
-            <option value="337">337</option>
-            <option value="338">338</option>
-            <option value="339">339</option>
-            <option value="340">340</option>
-            <option value="341">341</option>
-            <option value="342">342</option>
-            <option value="343">343</option>
-            <option value="344">344</option>
-            <option value="345">345</option>
-            <option value="346">346</option>
-            <option value="347">347</option>
-            <option value="348">348</option>
-            <option value="349">349</option>
-            <option value="350">350</option>
-            <option value="351">351</option>
-            <option value="352">352</option>
-            <option value="353">353</option>
-            <option value="354">354</option>
-            <option value="355">355</option>
-            <option value="356">356</option>
-            <option value="357">357</option>
-            <option value="358">358</option>
-            <option value="359">359</option>
-            <option value="360">360</option>
-            <option value="361">361</option>
-            <option value="362">362</option>
-            <option value="363">363</option>
-            <option value="364">364</option>
-            <option value="365">365</option>
-            <option value="366">366</option>
-            <option value="367">367</option>
-            <option value="368">368</option>
-            <option value="369">369</option>
-            <option value="370">370</option>
-            <option value="371">371</option>
-            <option value="372">372</option>
-            <option value="373">373</option>
-            <option value="374">374</option>
-            <option value="375">375</option>
-            <option value="376">376</option>
-            <option value="377">377</option>
-            <option value="378">378</option>
-            <option value="379">379</option>
-            <option value="380">380</option>
-            <option value="381">381</option>
-            <option value="382">382</option>
-            <option value="383">383</option>
-            <option value="384">384</option>
-            <option value="385">385</option>
-            <option value="386">386</option>
-            <option value="387">387</option>
-            <option value="388">388</option>
-            <option value="389">389</option>
-            <option value="390">390</option>
-            <option value="391">391</option>
-            <option value="392">392</option>
-            <option value="393">393</option>
-            <option value="394">394</option>
-            <option value="395">395</option>
-            <option value="396">396</option>
-            <option value="397">397</option>
-            <option value="398">398</option>
-            <option value="399">399</option>
-            <option value="NPs 1">NP-SF 1</option>
-            <option value="NPs 2">NP-SF 2</option>
-            <option value="NPs 3">NP-SF 3</option>
-            <option value="Bs 1">B-SF 1</option>
-            <option value="Bs 2">B-SF 2</option>
-            <option value="Bs 3">B-SF 3</option>
-            <option value="Bs 4">B-SF 4</option>
-            <option value="Bs 5">B-SF 5</option>
-            <option value="Bs 6">B-SF 6</option>
-            <option value="Bs 7">B-SF 7</option>
-            <option value="Bs 8">B-SF 8</option>
-            <option value="Bs 9">B-SF 9</option>
-            <option value="Bs 10">B-SF 10</option>
-            <option value="Bs 11">B-SF 11</option>
-            <option value="Bs 12">B-SF 12</option> 
-            <option value="Bs 13">B-SF 13</option>
+          <option value="None">None</option>
+          <option value="301">301</option>
+          <option value="302">302</option>
+          <option value="303">303</option>
+          <option value="304">304</option>
+          <option value="305">305</option>
+          <option value="306">306</option>
+          <option value="307">307</option>
+          <option value="308">308</option>
+          <option value="309">309</option>
+          <option value="310">310</option>
+          <option value="311">311</option>
+          <option value="312">312</option>
+          <option value="313">313</option>
+          <option value="314">314</option>
+          <option value="315">315</option>
+          <option value="316">316</option>
+          <option value="317">317</option>
+          <option value="318">318</option>
+          <option value="319">319</option>
+          <option value="320">320</option>
+          <option value="321">321</option>
+          <option value="322">322</option>
+          <option value="323">323</option>
+          <option value="324">324</option>
+          <option value="325">325</option>
+          <option value="326">326</option>
+          <option value="327">327</option>
+          <option value="328">328</option>
+          <option value="329">329</option>
+          <option value="330">330</option>
+          <option value="331">331</option>
+          <option value="332">332</option>
+          <option value="333">333</option>
+          <option value="334">334</option>
+          <option value="335">335</option>
+          <option value="336">336</option>
+          <option value="337">337</option>
+          <option value="338">338</option>
+          <option value="339">339</option>
+          <option value="340">340</option>
+          <option value="341">341</option>
+          <option value="342">342</option>
+          <option value="343">343</option>
+          <option value="344">344</option>
+          <option value="345">345</option>
+          <option value="346">346</option>
+          <option value="347">347</option>
+          <option value="348">348</option>
+          <option value="349">349</option>
+          <option value="350">350</option>
+          <option value="351">351</option>
+          <option value="352">352</option>
+          <option value="353">353</option>
+          <option value="354">354</option>
+          <option value="355">355</option>
+          <option value="356">356</option>
+          <option value="357">357</option>
+          <option value="358">358</option>
+          <option value="359">359</option>
+          <option value="360">360</option>
+          <option value="361">361</option>
+          <option value="362">362</option>
+          <option value="363">363</option>
+          <option value="364">364</option>
+          <option value="365">365</option>
+          <option value="366">366</option>
+          <option value="367">367</option>
+          <option value="368">368</option>
+          <option value="369">369</option>
+          <option value="370">370</option>
+          <option value="371">371</option>
+          <option value="372">372</option>
+          <option value="373">373</option>
+          <option value="374">374</option>
+          <option value="375">375</option>
+          <option value="376">376</option>
+          <option value="377">377</option>
+          <option value="378">378</option>
+          <option value="379">379</option>
+          <option value="380">380</option>
+          <option value="381">381</option>
+          <option value="382">382</option>
+          <option value="383">383</option>
+          <option value="384">384</option>
+          <option value="385">385</option>
+          <option value="386">386</option>
+          <option value="387">387</option>
+          <option value="388">388</option>
+          <option value="389">389</option>
+          <option value="390">390</option>
+          <option value="391">391</option>
+          <option value="392">392</option>
+          <option value="393">393</option>
+          <option value="394">394</option>
+          <option value="395">395</option>
+          <option value="396">396</option>
+          <option value="397">397</option>
+          <option value="398">398</option>
+          <option value="399">399</option>
+          <option value="NPs 1">NP-SF 1</option>
+          <option value="NPs 2">NP-SF 2</option>
+          <option value="NPs 3">NP-SF 3</option>
+          <option value="Bs 1">B-SF 1</option>
+          <option value="Bs 2">B-SF 2</option>
+          <option value="Bs 3">B-SF 3</option>
+          <option value="Bs 4">B-SF 4</option>
+          <option value="Bs 5">B-SF 5</option>
+          <option value="Bs 6">B-SF 6</option>
+          <option value="Bs 7">B-SF 7</option>
+          <option value="Bs 8">B-SF 8</option>
+          <option value="Bs 9">B-SF 9</option>
+          <option value="Bs 10">B-SF 10</option>
+          <option value="Bs 11">B-SF 11</option>
+          <option value="Bs 12">B-SF 12</option>
+          <option value="Bs 13">B-SF 13</option>
         </select>
-    </div>
+      </div>
 
-    <button id="add-trailer" class="button">Enter</button>
+      <button id="add-trailer" class="button">Enter</button>
 
-    <div class="mt-8 mb-4 flex justify-around">
+      <div class="mt-8 mb-4 flex justify-around">
         <div id="empty-count" class="text-lg font-semibold">Empty: 0</div>
         <div id="salvage-count" class="text-lg font-semibold">Salvage: 0</div>
         <div id="full-count" class="text-lg font-semibold">Full: 0</div>
+      </div>
+
+      <div
+        id="last-entered-window"
+        class="mt-4 p-4 rounded-lg bg-gray-700 text-white text-center font-bold"
+      ></div>
     </div>
 
-    <div id="last-entered-window" class="mt-4 p-4 rounded-lg bg-gray-700 text-white text-center font-bold">
-        </div>
-
-</div>
-
-<div class="container mt-8">
-    <h1 class="title">Entered Trailers</h1>
-    <div class="flex items-center justify-between mb-4">
+    <div class="container mt-8">
+      <h1 class="title">Entered Trailers</h1>
+      <div class="flex items-center justify-between mb-4">
         <h2 class="section-title">Trailers Needing Fuel</h2>
-        <span class="needs-fuel-count">Total: <span id="needs-fuel-count">0</span></span>
+        <span class="needs-fuel-count"
+          >Total: <span id="needs-fuel-count">0</span></span
+        >
+      </div>
+      <div class="trailer-list-container">
+        <ul id="needs-fuel-list" class="mb-8"></ul>
+      </div>
+
+      <h2 class="section-title">All Salvage Trailers</h2>
+      <div class="trailer-list-container">
+        <ul id="all-salvage-trailers-list"></ul>
+      </div>
+
+      <h2 class="section-title">All Empty Trailers</h2>
+      <div class="trailer-list-container">
+        <ul id="all-empty-trailers-list"></ul>
+      </div>
+
+      <h2 class="section-title">All Pallet Shuttle Trailers</h2>
+      <div class="trailer-list-container">
+        <ul id="all-pallet-shuttle-trailers-list"></ul>
+      </div>
+
+      <h2 class="section-title">All Seasonal Trailers</h2>
+      <div class="trailer-list-container">
+        <ul id="all-seasonal-trailers-list"></ul>
+      </div>
     </div>
-    <div class="trailer-list-container">
-        <ul id="needs-fuel-list" class="mb-8">
-            </ul>
-    </div>
 
-    <h2 class="section-title">All Salvage Trailers</h2>
-    <div class="trailer-list-container">
-        <ul id="all-salvage-trailers-list">
-            </ul>
-    </div>
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+      import {
+        getAuth,
+        signInWithCustomToken,
+        signInAnonymously,
+      } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+      import {
+        getFirestore,
+        doc,
+        deleteDoc,
+        onSnapshot,
+        collection,
+        setDoc,
+        query,
+        orderBy,
+      } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+      import {
+        getFunctions,
+        httpsCallable,
+      } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-functions.js";
 
-    <h2 class="section-title">All Empty Trailers</h2>
-    <div class="trailer-list-container">
-        <ul id="all-empty-trailers-list">
-            </ul>
-    </div>
+      const appId =
+        typeof __app_id !== "undefined" ? __app_id : "default-app-id";
+      const initialAuthToken =
+        typeof __initial_auth_token !== "undefined"
+          ? __initial_auth_token
+          : null;
+      const envFirebaseConfig =
+        typeof __firebase_config !== "undefined"
+          ? JSON.parse(__firebase_config)
+          : null;
 
-    <h2 class="section-title">All Pallet Shuttle Trailers</h2>
-    <div class="trailer-list-container">
-        <ul id="all-pallet-shuttle-trailers-list">
-            </ul>
-    </div>
-    
-    <h2 class="section-title">All Seasonal Trailers</h2>
-    <div class="trailer-list-container">
-        <ul id="all-seasonal-trailers-list">
-            </ul>
-    </div>
-</div>
+      const firebaseConfig = envFirebaseConfig || {
+        apiKey: "AIzaSyAxHIhsDl7uR2lmcmj9EWy8epX-1uBmrsw",
+        authDomain: "yard-walk.firebaseapp.com",
+        projectId: "yard-walk",
+        storageBucket: "yard-walk.firebasestorage.app",
+        messagingSenderId: "633967680523",
+        appId: "1:633967680523:web:47f7148b4966a6642e7b0e",
+        measurementId: "G-53CN6Q20PF",
+      };
 
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-    import { getAuth, signInWithCustomToken, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-    import { getFirestore, doc, deleteDoc, onSnapshot, collection, setDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-    import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-functions.js";
+      let db;
+      let auth;
+      let trailersCollectionRef;
+      let isAuthenticated = false;
+      let editingDocId = null;
 
-    const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-    const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
-    const envFirebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : null;
-    
-    const firebaseConfig = envFirebaseConfig || {
-      apiKey: "AIzaSyAxHIhsDl7uR2lmcmj9EWy8epX-1uBmrsw",
-      authDomain: "yard-walk.firebaseapp.com",
-      projectId: "yard-walk",
-      storageBucket: "yard-walk.firebasestorage.app",
-      messagingSenderId: "633967680523",
-      appId: "1:633967680523:web:47f7148b4966a6642e7b0e",
-      measurementId: "G-53CN6Q20PF"
-    };
+      const setUIState = (state) => {
+        const addTrailerButton = document.getElementById("add-trailer");
+        const openCameraButton = document.getElementById("open-camera");
+        const loadingOverlay = document.getElementById("loading-overlay");
+        addTrailerButton.disabled = state === "disabled";
+        openCameraButton.disabled = state === "disabled";
+        addTrailerButton.classList.toggle("disabled", state === "disabled");
+        openCameraButton.classList.toggle("disabled", state === "disabled");
+        loadingOverlay.style.display = state === "loading" ? "flex" : "none";
+      };
 
-    let db;
-    let auth;
-    let trailersCollectionRef;
-    let isAuthenticated = false;
-    let editingDocId = null;
-
-    const setUIState = (state) => {
-        const addTrailerButton = document.getElementById('add-trailer');
-        const openCameraButton = document.getElementById('open-camera');
-        const loadingOverlay = document.getElementById('loading-overlay');
-        addTrailerButton.disabled = state === 'disabled';
-        openCameraButton.disabled = state === 'disabled';
-        addTrailerButton.classList.toggle('disabled', state === 'disabled');
-        openCameraButton.classList.toggle('disabled', state === 'disabled');
-        loadingOverlay.style.display = state === 'loading' ? 'flex' : 'none';
-    };
-
-    const displayError = (message) => {
-        const errorMessageDiv = document.getElementById('error-message');
-        errorMessageDiv.style.display = 'block';
+      const displayError = (message) => {
+        const errorMessageDiv = document.getElementById("error-message");
+        errorMessageDiv.style.display = "block";
         errorMessageDiv.textContent = message;
-    };
+      };
 
-    const hideError = () => {
-        const errorMessageDiv = document.getElementById('error-message');
-        errorMessageDiv.style.display = 'none';
-    };
+      const hideError = () => {
+        const errorMessageDiv = document.getElementById("error-message");
+        errorMessageDiv.style.display = "none";
+      };
 
-    const resetForm = () => {
-        document.getElementById('trailer-number').value = '';
-        document.querySelector('input[name="status"][value="Empty"]').checked = true;
-        document.getElementById('needs-fuel').checked = false;
-        document.getElementById('red-tagged').checked = false;
-        document.getElementById('seasonal').checked = false;
-        document.getElementById('pallet-shuttle').checked = false;
-        document.getElementById('north-fence-line').value = 'None';
-        document.getElementById('south-fence-line').value = 'None';
-        document.getElementById('add-trailer').textContent = 'Enter';
+      const resetForm = () => {
+        document.getElementById("trailer-number").value = "";
+        document.querySelector(
+          'input[name="status"][value="Empty"]'
+        ).checked = true;
+        document.getElementById("needs-fuel").checked = false;
+        document.getElementById("red-tagged").checked = false;
+        document.getElementById("seasonal").checked = false;
+        document.getElementById("pallet-shuttle").checked = false;
+        document.getElementById("north-fence-line").value = "None";
+        document.getElementById("south-fence-line").value = "None";
+        document.getElementById("add-trailer").textContent = "Enter";
         editingDocId = null;
-        document.querySelectorAll('.trailer-item').forEach(item => item.classList.remove('editing'));
-    };
+        document
+          .querySelectorAll(".trailer-item")
+          .forEach((item) => item.classList.remove("editing"));
+      };
 
-    const getSortableValue = (trailerData) => {
+      const getSortableValue = (trailerData) => {
         const nf = trailerData.northFence;
         const sf = trailerData.southFence;
-        const fenceLine = nf !== 'None' ? nf : sf;
+        const fenceLine = nf !== "None" ? nf : sf;
 
-        if (fenceLine === 'None') {
-            return [false, '', 0];
+        if (fenceLine === "None") {
+          return [false, "", 0];
         }
 
-        const parts = fenceLine.split(' ');
+        const parts = fenceLine.split(" ");
         if (parts.length === 1 && !isNaN(parts[0])) {
-            return [true, 'NF', parseInt(parts[0], 10)];
+          return [true, "NF", parseInt(parts[0], 10)];
         }
-        
-        const numericPart = parts.pop();
-        const prefix = parts.join(' ');
-        
-        return [true, prefix, parseInt(numericPart, 10)];
-    };
 
-    document.addEventListener('DOMContentLoaded', async () => {
-        const trailerNumberInput = document.getElementById('trailer-number');
-        const needsFuelCheckbox = document.getElementById('needs-fuel');
-        const redTaggedCheckbox = document.getElementById('red-tagged');
-        const seasonalCheckbox = document.getElementById('seasonal');
-        const palletShuttleCheckbox = document.getElementById('pallet-shuttle');
-        const northFenceSelect = document.getElementById('north-fence-line');
-        const southFenceSelect = document.getElementById('south-fence-line');
-        const addTrailerButton = document.getElementById('add-trailer');
-        const lastEnteredWindow = document.getElementById('last-entered-window');
-        const emptyCountSpan = document.getElementById('empty-count');
-        const salvageCountSpan = document.getElementById('salvage-count');
-        const fullCountSpan = document.getElementById('full-count');
-        const needsFuelCountSpan = document.getElementById('needs-fuel-count');
-        const allEmptyTrailersList = document.getElementById('all-empty-trailers-list');
-        const allSalvageTrailersList = document.getElementById('all-salvage-trailers-list');
-        const allPalletShuttleTrailersList = document.getElementById('all-pallet-shuttle-trailers-list');
-        const allSeasonalTrailersList = document.getElementById('all-seasonal-trailers-list');
-        const needsFuelList = document.getElementById('needs-fuel-list');
-        const openCameraButton = document.getElementById('open-camera');
+        const numericPart = parts.pop();
+        const prefix = parts.join(" ");
+
+        return [true, prefix, parseInt(numericPart, 10)];
+      };
+
+      document.addEventListener("DOMContentLoaded", async () => {
+        const trailerNumberInput = document.getElementById("trailer-number");
+        const needsFuelCheckbox = document.getElementById("needs-fuel");
+        const redTaggedCheckbox = document.getElementById("red-tagged");
+        const seasonalCheckbox = document.getElementById("seasonal");
+        const palletShuttleCheckbox = document.getElementById("pallet-shuttle");
+        const northFenceSelect = document.getElementById("north-fence-line");
+        const southFenceSelect = document.getElementById("south-fence-line");
+        const addTrailerButton = document.getElementById("add-trailer");
+        const lastEnteredWindow = document.getElementById(
+          "last-entered-window"
+        );
+        const emptyCountSpan = document.getElementById("empty-count");
+        const salvageCountSpan = document.getElementById("salvage-count");
+        const fullCountSpan = document.getElementById("full-count");
+        const needsFuelCountSpan = document.getElementById("needs-fuel-count");
+        const allEmptyTrailersList = document.getElementById(
+          "all-empty-trailers-list"
+        );
+        const allSalvageTrailersList = document.getElementById(
+          "all-salvage-trailers-list"
+        );
+        const allPalletShuttleTrailersList = document.getElementById(
+          "all-pallet-shuttle-trailers-list"
+        );
+        const allSeasonalTrailersList = document.getElementById(
+          "all-seasonal-trailers-list"
+        );
+        const needsFuelList = document.getElementById("needs-fuel-list");
+        const openCameraButton = document.getElementById("open-camera");
 
         try {
-            setUIState('loading');
-            
-            const app = initializeApp(firebaseConfig);
-            auth = getAuth(app);
-            db = getFirestore(app);
-            
-            if (initialAuthToken) {
-                await signInWithCustomToken(auth, initialAuthToken);
-            } else {
-                await signInAnonymously(auth);
-            }
-            isAuthenticated = true;
-            setUIState('enabled');
-            
-            trailersCollectionRef = collection(db, `artifacts/${appId}/public/data/trailers`);
+          setUIState("loading");
 
-            if (openCameraButton) {
-                openCameraButton.addEventListener('click', () => {
-                    alert('Camera feature is not yet implemented.');
-                });
-            }
+          const app = initializeApp(firebaseConfig);
+          auth = getAuth(app);
+          db = getFirestore(app);
 
-            trailerNumberInput.addEventListener('keydown', (event) => {
-                if (event.key === 'Enter') {
-                    event.preventDefault();
-                    addTrailerButton.click();
-                }
+          if (initialAuthToken) {
+            await signInWithCustomToken(auth, initialAuthToken);
+          } else {
+            await signInAnonymously(auth);
+          }
+          isAuthenticated = true;
+          setUIState("enabled");
+
+          trailersCollectionRef = collection(
+            db,
+            `artifacts/${appId}/public/data/trailers`
+          );
+
+          if (openCameraButton) {
+            openCameraButton.addEventListener("click", () => {
+              alert("Camera feature is not yet implemented.");
             });
+          }
 
-            onSnapshot(query(trailersCollectionRef), (snapshot) => {
-                allEmptyTrailersList.innerHTML = '';
-                allSalvageTrailersList.innerHTML = '';
-                allPalletShuttleTrailersList.innerHTML = '';
-                allSeasonalTrailersList.innerHTML = '';
-                needsFuelList.innerHTML = '';
-                let emptyCount = 0;
-                let salvageCount = 0;
-                let fullCount = 0;
-                let needsFuelCount = 0;
-                let allTrailers = {};
-                
-                const tenHoursAgo = new Date(Date.now() - 10 * 60 * 60 * 1000);
+          trailerNumberInput.addEventListener("keydown", (event) => {
+            if (event.key === "Enter") {
+              event.preventDefault();
+              addTrailerButton.click();
+            }
+          });
 
-                snapshot.forEach(doc => {
-                    const trailerData = doc.data();
-                    if (trailerData.timestamp && trailerData.timestamp.toDate() < tenHoursAgo) {
-                        return;
-                    }
-                    allTrailers[doc.id] = trailerData;
-                });
-                
-                const trailers = Object.keys(allTrailers).map(id => ({ id, data: allTrailers[id] }));
+          onSnapshot(
+            query(trailersCollectionRef),
+            (snapshot) => {
+              allEmptyTrailersList.innerHTML = "";
+              allSalvageTrailersList.innerHTML = "";
+              allPalletShuttleTrailersList.innerHTML = "";
+              allSeasonalTrailersList.innerHTML = "";
+              needsFuelList.innerHTML = "";
+              let emptyCount = 0;
+              let salvageCount = 0;
+              let fullCount = 0;
+              let needsFuelCount = 0;
+              let allTrailers = {};
 
-                // Sort trailers by parking spot
-                trailers.sort((a, b) => {
-                    const [isAssignedA, prefixA, numA] = getSortableValue(a.data);
-                    const [isAssignedB, prefixB, numB] = getSortableValue(b.data);
+              const tenHoursAgo = new Date(Date.now() - 10 * 60 * 60 * 1000);
 
-                    if (isAssignedA !== isAssignedB) {
-                        return isAssignedB - isAssignedA;
-                    }
-                    if (prefixA !== prefixB) {
-                        return prefixA.localeCompare(prefixB);
-                    }
-                    return numA - numB;
-                });
+              snapshot.forEach((doc) => {
+                const trailerData = doc.data();
+                if (
+                  trailerData.timestamp &&
+                  trailerData.timestamp.toDate() < tenHoursAgo
+                ) {
+                  return;
+                }
+                allTrailers[doc.id] = trailerData;
+              });
 
-                trailers.forEach(trailer => {
-                    const trailerData = trailer.data;
-                    const docId = trailer.id;
+              const trailers = Object.keys(allTrailers).map((id) => ({
+                id,
+                data: allTrailers[id],
+              }));
 
-                    const details = [
-                        trailerData.status,
-                        trailerData.needsFuel ? 'Needs Fuel' : null,
-                        trailerData.redTagged ? 'Red Tagged' : null,
-                        trailerData.seasonal ? 'Seasonal' : null,
-                        trailerData.palletShuttle ? 'Pallet Shuttle' : null,
-                        trailerData.northFence !== 'None' ? `NF: ${trailerData.northFence}` : null,
-                        trailerData.southFence !== 'None' ? `SF: ${trailerData.southFence}` : null
-                    ].filter(Boolean).join(', ');
+              // Sort trailers by parking spot
+              trailers.sort((a, b) => {
+                const [isAssignedA, prefixA, numA] = getSortableValue(a.data);
+                const [isAssignedB, prefixB, numB] = getSortableValue(b.data);
 
-                    const createListItem = (docId, trailerData, details) => {
-                        const listItem = document.createElement('li');
-                        listItem.className = `trailer-item ${docId === editingDocId ? 'editing' : ''}`;
-                        listItem.dataset.docId = docId;
-                        listItem.dataset.trailerNumber = trailerData.trailerNumber;
-                        listItem.innerHTML = `
+                if (isAssignedA !== isAssignedB) {
+                  return isAssignedB - isAssignedA;
+                }
+                if (prefixA !== prefixB) {
+                  return prefixA.localeCompare(prefixB);
+                }
+                return numA - numB;
+              });
+
+              trailers.forEach((trailer) => {
+                const trailerData = trailer.data;
+                const docId = trailer.id;
+
+                const details = [
+                  trailerData.status,
+                  trailerData.needsFuel ? "Needs Fuel" : null,
+                  trailerData.redTagged ? "Red Tagged" : null,
+                  trailerData.seasonal ? "Seasonal" : null,
+                  trailerData.palletShuttle ? "Pallet Shuttle" : null,
+                  trailerData.northFence !== "None"
+                    ? `NF: ${trailerData.northFence}`
+                    : null,
+                  trailerData.southFence !== "None"
+                    ? `SF: ${trailerData.southFence}`
+                    : null,
+                ]
+                  .filter(Boolean)
+                  .join(", ");
+
+                const createListItem = (docId, trailerData, details) => {
+                  const listItem = document.createElement("li");
+                  listItem.className = `trailer-item ${
+                    docId === editingDocId ? "editing" : ""
+                  }`;
+                  listItem.dataset.docId = docId;
+                  listItem.dataset.trailerNumber = trailerData.trailerNumber;
+                  listItem.innerHTML = `
                             <div class="trailer-info">
                                 <div class="trailer-number">${trailerData.trailerNumber}</div>
                                 <div class="text-sm text-gray-400">${details}</div>
@@ -1226,145 +1487,194 @@
                                 </button>
                             </div>
                         `;
-                        return listItem;
-                    };
-
-                    if (trailerData.palletShuttle) {
-                        const palletShuttleItem = createListItem(docId, trailerData, details);
-                        allPalletShuttleTrailersList.appendChild(palletShuttleItem);
-                    }
-                    
-                    if (trailerData.seasonal) {
-                        const seasonalItem = createListItem(docId, trailerData, details);
-                        allSeasonalTrailersList.appendChild(seasonalItem);
-                    }
-
-                    if (trailerData.status === 'Empty') {
-                        emptyCount++;
-                        const emptyListItem = createListItem(docId, trailerData, details);
-                        allEmptyTrailersList.appendChild(emptyListItem);
-                    } else if (trailerData.status === 'Salvage') {
-                        salvageCount++;
-                        const salvageListItem = createListItem(docId, trailerData, details);
-                        allSalvageTrailersList.appendChild(salvageListItem);
-                    } else if (trailerData.status === 'Full') {
-                        fullCount++;
-                    }
-
-                    if (trailerData.needsFuel) {
-                        const needsFuelItem = createListItem(docId, trailerData, details);
-                        needsFuelItem.classList.add('needs-fuel');
-                        needsFuelList.appendChild(needsFuelItem);
-                        needsFuelCount++;
-                    }
-                });
-
-                emptyCountSpan.textContent = `Empty: ${emptyCount}`;
-                salvageCountSpan.textContent = `Salvage: ${salvageCount}`;
-                fullCountSpan.textContent = `Full: ${fullCount}`;
-                needsFuelCountSpan.textContent = needsFuelCount;
-                setUIState('enabled');
-
-                const addEditAndDeleteListeners = (listElement) => {
-                    listElement.querySelectorAll('.edit-button').forEach(button => {
-                        button.addEventListener('click', (event) => {
-                            const docId = event.target.dataset.docId;
-                            const trailerData = allTrailers[docId];
-                            trailerNumberInput.value = trailerData.trailerNumber;
-                            document.querySelector(`input[name="status"][value="${trailerData.status}"]`).checked = true;
-                            needsFuelCheckbox.checked = trailerData.needsFuel;
-                            redTaggedCheckbox.checked = trailerData.redTagged;
-                            seasonalCheckbox.checked = trailerData.seasonal;
-                            palletShuttleCheckbox.checked = trailerData.palletShuttle;
-                            northFenceSelect.value = 'None';
-                            southFenceSelect.value = 'None';
-                            editingDocId = docId;
-                            addTrailerButton.textContent = 'Update';
-                            document.querySelectorAll('.trailer-item').forEach(item => item.classList.remove('editing'));
-                            const itemToEdit = document.querySelector(`[data-doc-id="${docId}"]`);
-                            if(itemToEdit) { itemToEdit.classList.add('editing'); }
-                        });
-                    });
-
-                    listElement.querySelectorAll('.delete-button').forEach(button => {
-                        button.addEventListener('click', async (event) => {
-                            const docId = event.target.dataset.docId;
-                            if (docId) {
-                                const docRef = doc(trailersCollectionRef, docId);
-                                try {
-                                    await deleteDoc(docRef);
-                                    resetForm();
-                                } catch (e) {
-                                    console.error("Error deleting document: ", e);
-                                    displayError(`Failed to delete trailer: ${e.message}`);
-                                }
-                            }
-                        });
-                    });
+                  return listItem;
                 };
-                
-                addEditAndDeleteListeners(allEmptyTrailersList);
-                addEditAndDeleteListeners(allSalvageTrailersList);
-                addEditAndDeleteListeners(allPalletShuttleTrailersList);
-                addEditAndDeleteListeners(allSeasonalTrailersList);
-                addEditAndDeleteListeners(needsFuelList);
 
-            }, (error) => {
-                setUIState('enabled');
-                displayError('Failed to load trailers. Please check your Firebase rules and database path.');
-            });
-
-            addTrailerButton.addEventListener('click', async () => {
-                hideError();
-                if (!isAuthenticated) {
-                    displayError('You are not authenticated. Please try refreshing the page.');
-                    return;
-                }
-                const trailerNumber = trailerNumberInput.value.trim();
-                if (!trailerNumber) {
-                    displayError('Please enter a trailer number.');
-                    return;
+                if (trailerData.palletShuttle) {
+                  const palletShuttleItem = createListItem(
+                    docId,
+                    trailerData,
+                    details
+                  );
+                  allPalletShuttleTrailersList.appendChild(palletShuttleItem);
                 }
 
-                const status = document.querySelector('input[name="status"]:checked').value;
-                const trailerData = {
-                    trailerNumber: trailerNumber,
-                    status: status,
-                    needsFuel: needsFuelCheckbox.checked,
-                    redTagged: redTaggedCheckbox.checked,
-                    seasonal: seasonalCheckbox.checked,
-                    palletShuttle: palletShuttleCheckbox.checked,
-                    northFence: northFenceSelect.value,
-                    southFence: southFenceSelect.value,
-                    timestamp: new Date()
-                };
-                
-                const docIdToUse = editingDocId || trailerNumber;
-                const docRef = doc(trailersCollectionRef, docIdToUse);
-
-                try {
-                    await setDoc(docRef, trailerData);
-                    lastEnteredWindow.textContent = `${editingDocId ? 'Updated' : 'Recently entered'}: ${trailerNumber}`;
-                    lastEnteredWindow.style.display = 'block';
-                    resetForm();
-                } catch (e) {
-                    console.error("Error writing document: ", e);
-                    displayError(`Failed to save trailer: ${e.message}`);
+                if (trailerData.seasonal) {
+                  const seasonalItem = createListItem(
+                    docId,
+                    trailerData,
+                    details
+                  );
+                  allSeasonalTrailersList.appendChild(seasonalItem);
                 }
-            });
+
+                if (trailerData.status === "Empty") {
+                  emptyCount++;
+                  const emptyListItem = createListItem(
+                    docId,
+                    trailerData,
+                    details
+                  );
+                  allEmptyTrailersList.appendChild(emptyListItem);
+                } else if (trailerData.status === "Salvage") {
+                  salvageCount++;
+                  const salvageListItem = createListItem(
+                    docId,
+                    trailerData,
+                    details
+                  );
+                  allSalvageTrailersList.appendChild(salvageListItem);
+                } else if (trailerData.status === "Full") {
+                  fullCount++;
+                }
+
+                if (trailerData.needsFuel) {
+                  const needsFuelItem = createListItem(
+                    docId,
+                    trailerData,
+                    details
+                  );
+                  needsFuelItem.classList.add("needs-fuel");
+                  needsFuelList.appendChild(needsFuelItem);
+                  needsFuelCount++;
+                }
+              });
+
+              emptyCountSpan.textContent = `Empty: ${emptyCount}`;
+              salvageCountSpan.textContent = `Salvage: ${salvageCount}`;
+              fullCountSpan.textContent = `Full: ${fullCount}`;
+              needsFuelCountSpan.textContent = needsFuelCount;
+              setUIState("enabled");
+
+              const addEditAndDeleteListeners = (listElement) => {
+                listElement
+                  .querySelectorAll(".edit-button")
+                  .forEach((button) => {
+                    button.addEventListener("click", (event) => {
+                      const docId = event.target.dataset.docId;
+                      const trailerData = allTrailers[docId];
+                      trailerNumberInput.value = trailerData.trailerNumber;
+                      document.querySelector(
+                        `input[name="status"][value="${trailerData.status}"]`
+                      ).checked = true;
+                      needsFuelCheckbox.checked = trailerData.needsFuel;
+                      redTaggedCheckbox.checked = trailerData.redTagged;
+                      seasonalCheckbox.checked = trailerData.seasonal;
+                      palletShuttleCheckbox.checked = trailerData.palletShuttle;
+                      northFenceSelect.value = "None";
+                      southFenceSelect.value = "None";
+                      editingDocId = docId;
+                      addTrailerButton.textContent = "Update";
+                      document
+                        .querySelectorAll(".trailer-item")
+                        .forEach((item) => item.classList.remove("editing"));
+                      const itemToEdit = document.querySelector(
+                        `[data-doc-id="${docId}"]`
+                      );
+                      if (itemToEdit) {
+                        itemToEdit.classList.add("editing");
+                      }
+                    });
+                  });
+
+                listElement
+                  .querySelectorAll(".delete-button")
+                  .forEach((button) => {
+                    button.addEventListener("click", async (event) => {
+                      const docId = event.target.dataset.docId;
+                      if (docId) {
+                        const docRef = doc(trailersCollectionRef, docId);
+                        try {
+                          await deleteDoc(docRef);
+                          resetForm();
+                        } catch (e) {
+                          console.error("Error deleting document: ", e);
+                          displayError(
+                            `Failed to delete trailer: ${e.message}`
+                          );
+                        }
+                      }
+                    });
+                  });
+              };
+
+              addEditAndDeleteListeners(allEmptyTrailersList);
+              addEditAndDeleteListeners(allSalvageTrailersList);
+              addEditAndDeleteListeners(allPalletShuttleTrailersList);
+              addEditAndDeleteListeners(allSeasonalTrailersList);
+              addEditAndDeleteListeners(needsFuelList);
+            },
+            (error) => {
+              setUIState("enabled");
+              displayError(
+                "Failed to load trailers. Please check your Firebase rules and database path."
+              );
+            }
+          );
+
+          addTrailerButton.addEventListener("click", async () => {
+            hideError();
+            if (!isAuthenticated) {
+              displayError(
+                "You are not authenticated. Please try refreshing the page."
+              );
+              return;
+            }
+            const trailerNumber = trailerNumberInput.value.trim();
+            if (!trailerNumber) {
+              displayError("Please enter a trailer number.");
+              return;
+            }
+
+            const status = document.querySelector(
+              'input[name="status"]:checked'
+            ).value;
+            const trailerData = {
+              trailerNumber: trailerNumber,
+              status: status,
+              needsFuel: needsFuelCheckbox.checked,
+              redTagged: redTaggedCheckbox.checked,
+              seasonal: seasonalCheckbox.checked,
+              palletShuttle: palletShuttleCheckbox.checked,
+              northFence: northFenceSelect.value,
+              southFence: southFenceSelect.value,
+              timestamp: new Date(),
+            };
+
+            const docIdToUse = editingDocId || trailerNumber;
+            const docRef = doc(trailersCollectionRef, docIdToUse);
+
+            try {
+              await setDoc(docRef, trailerData);
+              lastEnteredWindow.textContent = `${
+                editingDocId ? "Updated" : "Recently entered"
+              }: ${trailerNumber}`;
+              lastEnteredWindow.style.display = "block";
+              resetForm();
+            } catch (e) {
+              console.error("Error writing document: ", e);
+              displayError(`Failed to save trailer: ${e.message}`);
+            }
+          });
         } catch (error) {
-            setUIState('disabled');
-            displayError(`Authentication Failed: ${error.message}. Please check your Firebase configuration.`);
+          setUIState("disabled");
+          displayError(
+            `Authentication Failed: ${error.message}. Please check your Firebase configuration.`
+          );
         }
-    });
-</script>
-  <footer>
-  <p>Copyright &copy;
- 2025 Paul Rosenbaum</p>
- <div>
-   Questions, Comments,
-   <a href="mailto:warlord666692000@yahoo.com" target="_blank" style="color: white;"><u>Contact me</u></a>
- </div>
-  </footer>
-</body>
+      });
+    </script>
+    <footer>
+      <p>Copyright &copy; 2025 Paul Rosenbaum</p>
+      <div>
+        Questions, Comments,
+        <a
+          href="mailto:warlord666692000@yahoo.com"
+          target="_blank"
+          style="color: white"
+          ><u>Contact me</u></a
+        >
+      </div>
+    </footer>
+  </body>
 </html>
