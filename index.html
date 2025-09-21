@@ -75,6 +75,7 @@
         .radio-group, .checkbox-group {
             display: flex;
             flex-wrap: wrap;
+            justify-content: space-around;
             gap: 1.5rem;
             margin-top: 0.5rem;
         }
@@ -200,6 +201,381 @@
             color: #ef4444;
             font-weight: bold;
         }
+
+:root {
+  --glow-hue: 220;
+  --glow-saturation: 80%;
+  --glow-lightness: 55%;
+  --glow-alpha: 0.15;
+  --glow-blur: 15px;
+  --glow-spread: 5px;
+  --glow-color: hsla(var(--glow-hue), var(--glow-saturation), var(--glow-lightness), var(--glow-alpha));
+  --glow-color-darker: hsla(var(--glow-hue), var(--glow-saturation), 35%, var(--glow-alpha));
+  --accent-hue: 220;
+  --accent-saturation: 95%;
+  --accent-lightness: 60%;
+  --accent-alpha: 1;
+  --accent-color: hsla(var(--accent-hue), var(--accent-saturation), var(--accent-lightness), var(--accent-alpha));
+  --accent-color-darker: hsla(var(--accent-hue), var(--accent-saturation), 40%, var(--accent-alpha));
+  --accent-color-transparent: hsla(var(--accent-hue), var(--accent-saturation), var(--accent-lightness), 0);
+  --accent-color-semitransparent: hsla(var(--accent-hue), var(--accent-saturation), var(--accent-lightness), 0.5);
+  --text-color: hsl(var(--accent-hue), 80%, 85%);
+  --bg-color: hsl(220, 20%, 10%);
+  --border-color: hsla(var(--accent-hue), 20%, 70%, 0.3);
+  --border-color-active: hsla(var(--accent-hue), 80%, 70%, 0.7);
+  --scan-color: var(--accent-color);
+  --scan-speed: 1.5s;
+  --scan-delay: 0s;
+  --particle-color: var(--accent-color);
+  --particle-speed: 3s;
+  --particle-delay: 0s;
+  --cube-color: var(--accent-color);
+  --cube-speed: 10s;
+  --cube-delay: 0s;
+  --ring-color: var(--accent-color);
+  --ring-speed: 2s;
+  --ring-delay: 0s;
+  --spectrum-color: var(--accent-color);
+  --spectrum-speed: 0.7s;
+  --spectrum-delay: 0s;
+  --chip-color: var(--accent-color);
+  --chip-bg-color: hsla(var(--accent-hue), var(--accent-saturation), var(--accent-lightness), 0.1);
+}
+
+.checkbox-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  color: var(--text-color);
+  cursor: pointer;
+}
+
+.holo-checkbox-input {
+  position: absolute;
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+
+.holo-checkbox {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  perspective: 400px;
+}
+
+.holo-box {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border: 2px solid var(--border-color);
+  border-radius: 8px;
+  transition: border-color 0.3s ease;
+}
+
+.holo-inner {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: var(--glow-color-darker);
+  border-radius: 6px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.scan-effect {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to bottom, transparent, var(--scan-color), transparent);
+  opacity: 0;
+  animation: scan var(--scan-speed) linear infinite;
+  animation-delay: var(--scan-delay);
+  border-radius: 8px;
+}
+
+.holo-particles {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.holo-particle {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  background-color: var(--particle-color);
+  border-radius: 50%;
+  opacity: 0;
+  animation: particle-float var(--particle-speed) linear infinite;
+  animation-delay: var(--particle-delay);
+}
+
+.activation-rings {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.activation-ring {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border: 2px solid var(--ring-color);
+  border-radius: 50%;
+  opacity: 0;
+  transform: scale(0.5);
+  animation: ring-expand var(--ring-speed) ease-out infinite;
+  animation-delay: var(--ring-delay);
+}
+
+.cube-transform {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  animation: cube-rotate var(--cube-speed) linear infinite;
+  animation-delay: var(--cube-delay);
+}
+
+.cube-face {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  border: 2px solid var(--cube-color);
+  background-color: hsla(var(--accent-hue), var(--accent-saturation), var(--accent-lightness), 0.1);
+  opacity: 0.5;
+}
+
+.corner-accent {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-style: solid;
+  border-color: var(--accent-color);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.holo-glow {
+  position: absolute;
+  top: -5px;
+  left: -5px;
+  right: -5px;
+  bottom: -5px;
+  background-color: var(--glow-color);
+  filter: blur(var(--glow-blur));
+  border-radius: 12px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.status-text {
+  font-size: 1rem;
+  font-weight: bold;
+  transition: color 0.3s ease;
+}
+
+.frequency-spectrum {
+  position: absolute;
+  bottom: -20px;
+  left: 0;
+  width: 100%;
+  height: 15px;
+  display: flex;
+  justify-content: space-between;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.frequency-bar {
+  width: 3%;
+  height: 100%;
+  background-color: var(--spectrum-color);
+  animation: spectrum-dance var(--spectrum-speed) linear infinite;
+  animation-delay: var(--spectrum-delay);
+}
+
+.data-chips {
+  position: absolute;
+  top: 50%;
+  left: 110%;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.data-chip {
+  padding: 2px 8px;
+  background-color: var(--chip-bg-color);
+  color: var(--chip-color);
+  border-radius: 4px;
+  font-size: 0.7rem;
+  white-space: nowrap;
+}
+
+/* Checked states */
+.holo-checkbox-input:checked ~ .holo-checkbox .holo-box {
+  border-color: var(--border-color-active);
+}
+
+.holo-checkbox-input:checked ~ .holo-checkbox .holo-inner {
+  opacity: 1;
+}
+
+.holo-checkbox-input:checked ~ .holo-checkbox .scan-effect {
+  opacity: 1;
+}
+
+.holo-checkbox-input:checked ~ .holo-checkbox .holo-particles .holo-particle {
+  opacity: 1;
+}
+
+.holo-checkbox-input:checked ~ .holo-checkbox .activation-rings .activation-ring {
+  opacity: 1;
+}
+
+.holo-checkbox-input:checked ~ .holo-checkbox .cube-transform {
+  animation-play-state: running;
+}
+
+.holo-checkbox-input:checked ~ .holo-checkbox .corner-accent {
+  opacity: 1;
+}
+
+.holo-checkbox-input:checked ~ .holo-checkbox .holo-glow {
+  opacity: 1;
+}
+
+.holo-checkbox-input:checked ~ .status-text {
+  color: var(--accent-color);
+}
+
+.holo-checkbox-input:checked ~ .frequency-spectrum {
+  opacity: 1;
+}
+
+.holo-checkbox-input:checked ~ .data-chips {
+  opacity: 1;
+}
+
+/* Positioning */
+.corner-accent:nth-of-type(1) { top: -2px; left: -2px; border-width: 2px 0 0 2px; border-top-left-radius: 8px; }
+.corner-accent:nth-of-type(2) { top: -2px; right: -2px; border-width: 2px 2px 0 0; border-top-right-radius: 8px; }
+.corner-accent:nth-of-type(3) { bottom: -2px; left: -2px; border-width: 0 0 2px 2px; border-bottom-left-radius: 8px; }
+.corner-accent:nth-of-type(4) { bottom: -2px; right: -2px; border-width: 0 2px 2px 0; border-bottom-right-radius: 8px; }
+
+.cube-face:nth-child(1) { transform: rotateY(0deg) translateZ(20px); }
+.cube-face:nth-child(2) { transform: rotateY(90deg) translateZ(20px); }
+.cube-face:nth-child(3) { transform: rotateY(180deg) translateZ(20px); }
+.cube-face:nth-child(4) { transform: rotateY(-90deg) translateZ(20px); }
+.cube-face:nth-child(5) { transform: rotateX(90deg) translateZ(20px); }
+.cube-face:nth-child(6) { transform: rotateX(-90deg) translateZ(20px); }
+
+/* Animations */
+@keyframes scan {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100%); }
+}
+
+@keyframes particle-float {
+  0% { transform: translate(0, 0); opacity: 0; }
+  25% { opacity: 1; }
+  75% { opacity: 1; }
+  100% { transform: translate(var(--x-end), var(--y-end)); opacity: 0; }
+}
+
+@keyframes ring-expand {
+  0% { transform: scale(0.5); opacity: 1; }
+  100% { transform: scale(1.5); opacity: 0; }
+}
+
+@keyframes cube-rotate {
+  from { transform: rotateX(0deg) rotateY(0deg); }
+  to { transform: rotateX(360deg) rotateY(360deg); }
+}
+
+@keyframes spectrum-dance {
+  0%, 100% { transform: scaleY(0.1); }
+  50% { transform: scaleY(1); }
+}
+
+/* Particle positions */
+.holo-particle:nth-child(1) { --x-end: 20px; --y-end: -30px; animation-duration: 2.3s; }
+.holo-particle:nth-child(2) { --x-end: 40px; --y-end: 10px; animation-duration: 2.8s; }
+.holo-particle:nth-child(3) { --x-end: -20px; --y-end: 20px; animation-duration: 2.5s; }
+.holo-particle:nth-child(4) { --x-end: -30px; --y-end: -10px; animation-duration: 3s; }
+.holo-particle:nth-child(5) { --x-end: 10px; --y-end: 30px; animation-duration: 2.2s; }
+.holo-particle:nth-child(6) { --x-end: -10px; --y-end: -20px; animation-duration: 2.7s; }
+
+/* Ring delays */
+.activation-ring:nth-child(2) { animation-delay: 0.5s; }
+.activation-ring:nth-child(3) { animation-delay: 1s; }
+
+/* Spectrum delays */
+.frequency-bar:nth-child(2) { animation-delay: 0.1s; }
+.frequency-bar:nth-child(3) { animation-delay: 0.2s; }
+.frequency-bar:nth-child(4) { animation-delay: 0.3s; }
+.frequency-bar:nth-child(5) { animation-delay: 0.4s; }
+.frequency-bar:nth-child(6) { animation-delay: 0.5s; }
+.frequency-bar:nth-child(7) { animation-delay: 0.6s; }
+.frequency-bar:nth-child(8) { animation-delay: 0.7s; }
+.frequency-bar:nth-child(9) { animation-delay: 0.8s; }
+.frequency-bar:nth-child(10) { animation-delay: 0.9s; }
+.frequency-bar:nth-child(11) { animation-delay: 1s; }
+.frequency-bar:nth-child(12) { animation-delay: 1.1s; }
+.frequency-bar:nth-child(13) { animation-delay: 1.2s; }
+.frequency-bar:nth-child(14) { animation-delay: 1.3s; }
+.frequency-bar:nth-child(15) { animation-delay: 1.4s; }
+.frequency-bar:nth-child(16) { animation-delay: 1.5s; }
+.frequency-bar:nth-child(17) { animation-delay: 1.6s; }
+.frequency-bar:nth-child(18) { animation-delay: 1.7s; }
+.frequency-bar:nth-child(19) { animation-delay: 1.8s; }
+.frequency-bar:nth-child(20) { animation-delay: 1.9s; }
+
+.radio-input {
+  display: flex;
+  flex-direction: row;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  justify-content: space-evenly;
+  width: 100%;
+}
+
+.radio-input .label {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin: 5px;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.radio-input .label:hover {
+  background-color: #eee;
+}
+
+.radio-input .label .text {
+  margin-left: 1px;
+}
+
+.radio-input input[type="radio"] {
+  display: none;
+}
+
+.radio-input input[type="radio"]:checked + .text {
+  color: #333;
+  font-weight: 900;
+}
     </style>
 </head>
 <body>
@@ -221,40 +597,174 @@
     </div>
 
     <div class="input-group">
-        <div class="radio-group">
-            <label class="radio-label">
-                <input type="radio" name="status" value="Empty" checked>
-                Empty
-            </label>
-            <label class="radio-label">
-                <input type="radio" name="status" value="Salvage">
-                Salvage
-            </label>
-            <label class="radio-label">
-                <input type="radio" name="status" value="Full">
-                Full
-            </label>
-        </div>
+        <div class="radio-input">
+      <label class="label">
+        <input
+          type="radio"
+          id="value-1"
+          checked=""
+          name="status"
+          value="Empty"
+        />
+        <p class="text">Empty</p>
+      </label>
+      <label class="label">
+        <input type="radio" id="value-2" name="status" value="Salvage" />
+        <p class="text">Salvage</p>
+      </label>
+      <label class="label">
+        <input type="radio" id="value-3" name="status" value="Full" />
+        <p class="text">Full</p>
+      </label>
+    </div>
     </div>
 
     <div class="input-group">
         <div class="checkbox-group">
-            <label class="checkbox-label">
-                <input type="checkbox" id="needs-fuel">
-                Needs Fuel?
-            </label>
-            <label class="checkbox-label">
-                <input type="checkbox" id="red-tagged">
-                Red Tagged?
-            </label>
-            <label class="checkbox-label">
-                <input type="checkbox" id="seasonal">
-                Seasonal?
-            </label>
-            <label class="checkbox-label">
-                <input type="checkbox" id="pallet-shuttle">
-                Pallet Shuttle?
-            </label>
+            <div class="checkbox-container">
+              <input class="holo-checkbox-input" id="needs-fuel" type="checkbox" />
+              <label class="holo-checkbox" for="needs-fuel">
+                <div class="holo-box">
+                  <div class="holo-inner"></div>
+                  <div class="scan-effect"></div>
+                  <div class="holo-particles">
+                    <div class="holo-particle"></div>
+                    <div class="holo-particle"></div>
+                    <div class="holo-particle"></div>
+                    <div class="holo-particle"></div>
+                    <div class="holo-particle"></div>
+                    <div class="holo-particle"></div>
+                  </div>
+                  <div class="activation-rings">
+                    <div class="activation-ring"></div>
+                    <div class="activation-ring"></div>
+                    <div class="activation-ring"></div>
+                  </div>
+                  <div class="cube-transform">
+                    <div class="cube-face"></div>
+                    <div class="cube-face"></div>
+                    <div class="cube-face"></div>
+                    <div class="cube-face"></div>
+                    <div class="cube-face"></div>
+                    <div class="cube-face"></div>
+                  </div>
+                </div>
+                <div class="corner-accent"></div>
+                <div class="corner-accent"></div>
+                <div class="corner-accent"></div>
+                <div class="corner-accent"></div>
+                <div class="holo-glow"></div>
+              </label>
+              <div class="status-text">Needs Fuel?</div>
+            </div>
+            <div class="checkbox-container">
+              <input class="holo-checkbox-input" id="red-tagged" type="checkbox" />
+              <label class="holo-checkbox" for="red-tagged">
+                <div class="holo-box">
+                  <div class="holo-inner"></div>
+                  <div class="scan-effect"></div>
+                  <div class="holo-particles">
+                    <div class="holo-particle"></div>
+                    <div class="holo-particle"></div>
+                    <div class="holo-particle"></div>
+                    <div class="holo-particle"></div>
+                    <div class="holo-particle"></div>
+                    <div class="holo-particle"></div>
+                  </div>
+                  <div class="activation-rings">
+                    <div class="activation-ring"></div>
+                    <div class="activation-ring"></div>
+                    <div class="activation-ring"></div>
+                  </div>
+                  <div class="cube-transform">
+                    <div class="cube-face"></div>
+                    <div class="cube-face"></div>
+                    <div class="cube-face"></div>
+                    <div class="cube-face"></div>
+                    <div class="cube-face"></div>
+                    <div class="cube-face"></div>
+                  </div>
+                </div>
+                <div class="corner-accent"></div>
+                <div class="corner-accent"></div>
+                <div class="corner-accent"></div>
+                <div class="corner-accent"></div>
+                <div class="holo-glow"></div>
+              </label>
+              <div class="status-text">Red Tagged?</div>
+            </div>
+            <div class="checkbox-container">
+              <input class="holo-checkbox-input" id="seasonal" type="checkbox" />
+              <label class="holo-checkbox" for="seasonal">
+                <div class="holo-box">
+                  <div class="holo-inner"></div>
+                  <div class="scan-effect"></div>
+                  <div class="holo-particles">
+                    <div class="holo-particle"></div>
+                    <div class="holo-particle"></div>
+                    <div class="holo-particle"></div>
+                    <div class="holo-particle"></div>
+                    <div class="holo-particle"></div>
+                    <div class="holo-particle"></div>
+                  </div>
+                  <div class="activation-rings">
+                    <div class="activation-ring"></div>
+                    <div class="activation-ring"></div>
+                    <div class="activation-ring"></div>
+                  </div>
+                  <div class="cube-transform">
+                    <div class="cube-face"></div>
+                    <div class="cube-face"></div>
+                    <div class="cube-face"></div>
+                    <div class="cube-face"></div>
+                    <div class="cube-face"></div>
+                    <div class="cube-face"></div>
+                  </div>
+                </div>
+                <div class="corner-accent"></div>
+                <div class="corner-accent"></div>
+                <div class="corner-accent"></div>
+                <div class="corner-accent"></div>
+                <div class="holo-glow"></div>
+              </label>
+              <div class="status-text">Seasonal?</div>
+            </div>
+            <div class="checkbox-container">
+              <input class="holo-checkbox-input" id="pallet-shuttle" type="checkbox" />
+              <label class="holo-checkbox" for="pallet-shuttle">
+                <div class="holo-box">
+                  <div class="holo-inner"></div>
+                  <div class="scan-effect"></div>
+                  <div class="holo-particles">
+                    <div class="holo-particle"></div>
+                    <div class="holo-particle"></div>
+                    <div class="holo-particle"></div>
+                    <div class="holo-particle"></div>
+                    <div class="holo-particle"></div>
+                    <div class="holo-particle"></div>
+                  </div>
+                  <div class="activation-rings">
+                    <div class="activation-ring"></div>
+                    <div class="activation-ring"></div>
+                    <div class="activation-ring"></div>
+                  </div>
+                  <div class="cube-transform">
+                    <div class="cube-face"></div>
+                    <div class="cube-face"></div>
+                    <div class="cube-face"></div>
+                    <div class="cube-face"></div>
+                    <div class="cube-face"></div>
+                    <div class="cube-face"></div>
+                  </div>
+                </div>
+                <div class="corner-accent"></div>
+                <div class="corner-accent"></div>
+                <div class="corner-accent"></div>
+                <div class="corner-accent"></div>
+                <div class="holo-glow"></div>
+              </label>
+              <div class="status-text">Pallet Shuttle?</div>
+            </div>
         </div>
     </div>
 
@@ -767,8 +1277,8 @@
                             redTaggedCheckbox.checked = trailerData.redTagged;
                             seasonalCheckbox.checked = trailerData.seasonal;
                             palletShuttleCheckbox.checked = trailerData.palletShuttle;
-                            northFenceSelect.value = trailerData.northFence;
-                            southFenceSelect.value = trailerData.southFence;
+                            northFenceSelect.value = 'None';
+                            southFenceSelect.value = 'None';
                             editingDocId = docId;
                             addTrailerButton.textContent = 'Update';
                             document.querySelectorAll('.trailer-item').forEach(item => item.classList.remove('editing'));
@@ -854,9 +1364,8 @@
  2025 Paul Rosenbaum</p>
  <div>
    Questions, Comments,
-   <a href="mailto:warlord666692000@yahoo.com" target="_blank" style="color: white;">Contact me</a>
+   <a href="mailto:warlord666692000@yahoo.com" target="_blank" style="color: white;"><u>Contact me</u></a>
  </div>
   </footer>
 </body>
 </html>
-
