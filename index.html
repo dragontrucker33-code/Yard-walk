@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Yard Walk Web App</title>
+    <script src='https://unpkg.com/tesseract.js@2.1.4/dist/tesseract.min.js'></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
       body {
@@ -775,6 +776,7 @@
       <div id="error-message"></div>
 
       <button id="open-camera" class="open-camera-button">Open Camera</button>
+      <input type="file" id="camera-input" accept="image/*;capture=camera" capture="environment" style="display: none;">
 
       <div class="input-group">
         <label for="trailer-number" class="input-label">Trailer Number</label>
@@ -1387,11 +1389,45 @@
             `artifacts/${appId}/public/data/trailers`
           );
 
+          const cameraInput = document.getElementById("camera-input");
+
           if (openCameraButton) {
             openCameraButton.addEventListener("click", () => {
-              alert("Camera feature is not yet implemented.");
+              cameraInput.click(); // Trigger the hidden file input
             });
           }
+
+          cameraInput.addEventListener("change", async (event) => {
+            const file = event.target.files[0];
+            if (!file) {
+              return;
+            }
+
+            setUIState("loading");
+            hideError();
+
+            try {
+              const {
+                data: { text },
+              } = await Tesseract.recognize(file, "eng", {
+                logger: (m) => console.log(m),
+              });
+
+              const sixDigitNumberMatch = text.match(/\b\d{6}\b/);
+              if (sixDigitNumberMatch) {
+                trailerNumberInput.value = sixDigitNumberMatch[0];
+                hideError();
+              } else {
+                displayError("No 6-digit trailer number found in the image.");
+              }
+            } catch (error) {
+              console.error("OCR Error:", error);
+              displayError("Failed to process image with OCR.");
+            } finally {
+              setUIState("enabled");
+              cameraInput.value = ""; // Clear the input so change event fires again for same file
+            }
+          });
 
           trailerNumberInput.addEventListener("keydown", (event) => {
             if (event.key === "Enter") {
