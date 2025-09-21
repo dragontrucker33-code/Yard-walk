@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Yard Walk Web App</title>
-    <script src='https://unpkg.com/tesseract.js@2.1.4/dist/tesseract.min.js'></script>
+    <script src="https://unpkg.com/tesseract.js@2.1.4/dist/tesseract.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
       body {
@@ -776,7 +776,13 @@
       <div id="error-message"></div>
 
       <button id="open-camera" class="open-camera-button">Open Camera</button>
-      <input type="file" id="camera-input" accept="image/*;capture=camera" capture="environment" style="display: none;">
+      <input
+        type="file"
+        id="camera-input"
+        accept="image/*;capture=camera"
+        capture="environment"
+        style="display: none"
+      />
 
       <div class="input-group">
         <label for="trailer-number" class="input-label">Trailer Number</label>
@@ -1194,6 +1200,7 @@
         id="last-entered-window"
         class="mt-4 p-4 rounded-lg bg-gray-700 text-white text-center font-bold"
       ></div>
+      <canvas id="ocr-canvas" style="display: none"></canvas>
     </div>
 
     <div class="container mt-8">
@@ -1390,6 +1397,33 @@
           );
 
           const cameraInput = document.getElementById("camera-input");
+          const ocrCanvas = document.getElementById("ocr-canvas");
+          const ocrContext = ocrCanvas.getContext("2d");
+
+          // Function to preprocess image for OCR
+          const preprocessImage = (imageBitmap) => {
+            ocrCanvas.width = imageBitmap.width;
+            ocrCanvas.height = imageBitmap.height;
+            ocrContext.drawImage(imageBitmap, 0, 0);
+
+            // Example preprocessing: convert to grayscale
+            const imageData = ocrContext.getImageData(
+              0,
+              0,
+              ocrCanvas.width,
+              ocrCanvas.height
+            );
+            const data = imageData.data;
+            for (let i = 0; i < data.length; i += 4) {
+              const avg = (data[i] + data[i + 1] + data[i + 2]) / 3;
+              data[i] = avg; // red
+              data[i + 1] = avg; // green
+              data[i + 2] = avg; // blue
+            }
+            ocrContext.putImageData(imageData, 0, 0);
+
+            return ocrCanvas.toDataURL();
+          };
 
           if (openCameraButton) {
             openCameraButton.addEventListener("click", () => {
@@ -1407,14 +1441,19 @@
             hideError();
 
             try {
+              const imageBitmap = await createImageBitmap(file);
+              const processedImage = preprocessImage(imageBitmap);
+
               const {
                 data: { text },
-              } = await Tesseract.recognize(file, "eng", {
+              } = await Tesseract.recognize(processedImage, "eng", {
                 logger: (m) => console.log(m),
               });
 
-              const sixDigitNumberMatch = text.match(/\b\d{6}\b/);
-              if (sixDigitNumberMatch) {
+              console.log("OCR Result Text:", text); // Debugging output
+
+              const sixDigitNumberMatch = text.match(/\d{6}/);
+              if (sixDigitNumberMatch && sixDigitNumberMatch[0].length === 6) {
                 trailerNumberInput.value = sixDigitNumberMatch[0];
                 hideError();
               } else {
