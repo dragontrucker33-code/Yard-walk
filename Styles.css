@@ -112,10 +112,6 @@ body {
     color: #ffffff;
 }
 
-.counts {
-  display: flex;
-  justify-content: space-evenly;
-}
 
 .radio-group,
 .checkbox-group {
@@ -312,6 +308,11 @@ body {
     background-color: #3f0909;
     border-radius: 0.5rem;
     display: none;
+}
+
+.Counts {
+  display: flex;
+  justify-content: space-evenly;
 }
 
 /* Footer */
