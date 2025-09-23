@@ -310,7 +310,7 @@ body {
     display: none;
 }
 
-.Counts {
+.counts {
   display: flex;
   justify-content: space-evenly;
 }
