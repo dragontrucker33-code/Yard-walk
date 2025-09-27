@@ -110,7 +110,7 @@ body {
   color: #ffffff;
 }
 
-.radio-group,
+/* .radio-group, */
 .checkbox-group {
   display: flex;
   flex-wrap: wrap;
@@ -865,7 +865,7 @@ footer a {
   }
 
   .radio-button-group,
-  /* checkbox-group { */
+  checkbox-group {
     flex-direction: column;
     align-items: flex-start;
   }
