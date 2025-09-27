@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Yard Walk Web App</title>
-    <script src="https://unpkg.com/tesseract.js@2.1.4/dist/tesseract.min.js"></script>
+
     <link rel="stylesheet" href="Styles.css" />
   </head>
   <body>
@@ -17,26 +17,14 @@
 
       <div id="error-message"></div>
 
-      <button id="open-camera" class="open-camera-button">Open Camera</button>
-      <input
-        type="file"
-        id="camera-input"
-        accept="image/*;capture=camera"
-        capture="environment"
-        style="display: none"
-      />
-
       <div class="input-group">
         <label for="trailer-number" class="input-label">Trailer Number</label>
-        <div class="flex">
-          <input
-            type="number"
-            id="trailer-number"
-            class="input-field"
-            placeholder="Enter Trailer Number"
-          />
-          <button id="scan-button" class="button">Scan</button>
-        </div>
+        <input
+          type="number"
+          id="trailer-number"
+          class="input-field"
+          placeholder="Enter Trailer Number"
+        />
       </div>
 
       <button id="add-comment-button" class="button add-comment-button">
@@ -330,7 +318,7 @@
           <option value="B 1">B-NF 1</option>
           <option value="B 2">B-NF 2</option>
           <option value="B 3">B-NF 3</option>
-           <option value="Curb 1">Curb 1</option>
+          <option value="Curb 1">Curb 1</option>
           <option value="Curb 2">Curb 2</option>
           <option value="Curb 3">Curb 3</option>
           <option value="Curb 4">Curb 4</option>
@@ -342,7 +330,7 @@
           <option value="WT 2">WT 2</option>
           <option value="WT 3">WT 3</option>
           <option value="WT 4">WT 4</option>
-          <option value="WT 5">WT 5</option>         
+          <option value="WT 5">WT 5</option>
         </select>
       </div>
 
@@ -473,25 +461,24 @@
       <button id="add-trailer" class="button">Enter</button>
 
       <div class="counts">
-        <div id="empty-count" class="text-lg font-semibold">Empty: 0</div>
-        <div id="salvage-count" class="text-lg font-semibold">Salvage: 0</div>
-        <div id="full-count" class="text-lg font-semibold">Full: 0</div>
+        <div id="empty-count">Empty: 0</div>
+        <div id="salvage-count">Salvage: 0</div>
+        <div id="full-count">Full: 0</div>
       </div>
 
       <div id="last-entered-window" class="last-entered-window"></div>
-      <canvas id="ocr-canvas" style="display: none"></canvas>
     </div>
 
-    <div class="container mt-8">
+    <div class="container">
       <h1 class="title">Entered Trailers</h1>
-      <div class="flex items-center justify-between mb-4">
+      <div class="mb-4">
         <h2 class="section-title">Trailers Needing Fuel</h2>
         <span class="needs-fuel-count"
           >Total: <span id="needs-fuel-count">0</span></span
         >
       </div>
       <div class="trailer-list-container">
-        <ul id="needs-fuel-list" class="mb-8"></ul>
+        <ul id="needs-fuel-list"></ul>
       </div>
 
       <h2 class="section-title">All Salvage Trailers</h2>
