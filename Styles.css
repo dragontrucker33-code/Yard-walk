@@ -834,7 +834,61 @@ footer a {
     animation-delay: 1.9s;
 }
 
-/* From Uiverse.io by InfinityLoopGames */
+/* Media Queries for Medium Phones */
+@media (max-width: 768px) {
+    .container {
+        padding: 1.5rem;
+    }
+
+    .title {
+        font-size: 1.8rem;
+    }
+
+    .section-title {
+        font-size: 1.3rem;
+    }
+
+    .radio-button-group,
+    .checkbox-group {
+        gap: 1rem;
+    }
+}
+
+/* Media Queries for Small Phones */
+@media (max-width: 480px) {
+    body {
+        padding: 1rem 0.5rem;
+    }
+
+    .container {
+        padding: 1rem;
+    }
+
+    .title {
+        font-size: 1.5rem;
+    }
+
+    .section-title {
+        font-size: 1.2rem;
+    }
+
+    .radio-button-group,
+    .checkbox-group {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .trailer-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
+    .trailer-info {
+        gap: 0.25rem;
+    }
+}
+
 .radio-button-group {
     display: flex;
     flex-direction: row;
