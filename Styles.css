@@ -865,7 +865,7 @@ footer a {
   }
 
   .radio-button-group,
-  .checkbox-group {
+  /* checkbox-group { */
     flex-direction: column;
     align-items: flex-start;
   }
