@@ -197,11 +197,13 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebas
             return ocrCanvas.toDataURL();
           };
 
-          if (openCameraButton) {
-            openCameraButton.addEventListener("click", () => {
-              cameraInput.click(); // Trigger the hidden file input
-            });
-          }
+        const scanButton = document.getElementById("scan-button");
+
+        if (scanButton) {
+          scanButton.addEventListener("click", () => {
+            cameraInput.click();
+          });
+        }
 
           cameraInput.addEventListener("change", async (event) => {
             const file = event.target.files[0];
