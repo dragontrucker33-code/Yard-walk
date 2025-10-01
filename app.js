@@ -66,7 +66,7 @@ const resetForm = () => {
   document.getElementById("trailer-number").value = "";
   document.querySelector('input[name="status"][value="Empty"]').checked = true;
   document.getElementById("needs-fuel").checked = false;
-  document.getElementById("red-tagged").checked = false;
+  document.getElementById("inbound").checked = false;
   document.getElementById("seasonal").checked = false;
   document.getElementById("pallet-shuttle").checked = false;
   document.getElementById("north-fence-line").value = "None";
@@ -103,7 +103,7 @@ const getSortableValue = (trailerData) => {
 document.addEventListener("DOMContentLoaded", async () => {
   const trailerNumberInput = document.getElementById("trailer-number");
   const needsFuelCheckbox = document.getElementById("needs-fuel");
-  const redTaggedCheckbox = document.getElementById("red-tagged");
+  const inboundCheckbox = document.getElementById("inbound");
   const seasonalCheckbox = document.getElementById("seasonal");
   const palletShuttleCheckbox = document.getElementById("pallet-shuttle");
   const northFenceSelect = document.getElementById("north-fence-line");
@@ -124,8 +124,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   const allPalletShuttleTrailersList = document.getElementById(
     "all-pallet-shuttle-trailers-list"
   );
-  const allSeasonalTrailersList = document.getElementById(
-    "all-seasonal-trailers-list"
+  const allInboundSeasonalTrailersList = document.getElementById(
+    "all-inbound-seasonal-trailers-list"
   );
   const needsFuelList = document.getElementById("needs-fuel-list");
   const addCommentButton = document.getElementById("add-comment-button");
@@ -169,7 +169,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         allEmptyTrailersList.innerHTML = "";
         allSalvageTrailersList.innerHTML = "";
         allPalletShuttleTrailersList.innerHTML = "";
-        allSeasonalTrailersList.innerHTML = "";
+        allInboundSeasonalTrailersList.innerHTML = "";
         needsFuelList.innerHTML = "";
         let emptyCount = 0;
         let salvageCount = 0;
@@ -226,7 +226,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           const details = [
             trailerData.status,
             trailerData.needsFuel ? "Needs Fuel" : null,
-            trailerData.redTagged ? "Red Tagged" : null,
+            trailerData.inbound ? "Inbound" : null,
             trailerData.seasonal ? "Seasonal" : null,
             trailerData.palletShuttle ? "Pallet Shuttle" : null,
             trailerData.northFence !== "None"
@@ -279,9 +279,13 @@ document.addEventListener("DOMContentLoaded", async () => {
             allPalletShuttleTrailersList.appendChild(palletShuttleItem);
           }
 
-          if (trailerData.seasonal) {
-            const seasonalItem = createListItem(docId, trailerData, details);
-            allSeasonalTrailersList.appendChild(seasonalItem);
+          if (trailerData.inbound || trailerData.seasonal) {
+            const inboundSeasonalItem = createListItem(
+              docId,
+              trailerData,
+              details
+            );
+            allInboundSeasonalTrailersList.appendChild(inboundSeasonalItem);
           }
 
           if (trailerData.status === "Empty") {
@@ -320,7 +324,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 `input[name="status"][value="${trailerData.status}"]`
               ).checked = true;
               needsFuelCheckbox.checked = trailerData.needsFuel;
-              redTaggedCheckbox.checked = trailerData.redTagged;
+              inboundCheckbox.checked = trailerData.inbound;
               seasonalCheckbox.checked = trailerData.seasonal;
               palletShuttleCheckbox.checked = trailerData.palletShuttle;
               northFenceSelect.value = "None";
@@ -366,7 +370,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         addEditAndDeleteListeners(allEmptyTrailersList);
         addEditAndDeleteListeners(allSalvageTrailersList);
         addEditAndDeleteListeners(allPalletShuttleTrailersList);
-        addEditAndDeleteListeners(allSeasonalTrailersList);
+        addEditAndDeleteListeners(allInboundSeasonalTrailersList);
         addEditAndDeleteListeners(needsFuelList);
       },
       (error) => {
@@ -399,7 +403,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         trailerNumber: trailerNumber,
         status: status,
         needsFuel: needsFuelCheckbox.checked,
-        redTagged: redTaggedCheckbox.checked,
+        inbound: inboundCheckbox.checked,
         seasonal: seasonalCheckbox.checked,
         palletShuttle: palletShuttleCheckbox.checked,
         comments: comments,
