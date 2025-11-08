@@ -310,6 +310,10 @@ footer {
   color: #9ca3af;
 }
 
+.footer__text{
+  margin-right: 24px;
+}
+
 footer a {
   color: white;
   text-decoration: underline;
@@ -319,13 +323,21 @@ footer a {
   max-width: 90px;
   filter: invert();
   background-color: white;
+  border-radius: 12px;
+  margin-left: 38px;
+  padding: 12px;
+  border-radius: 12px;
+  
 }
 
 img {
   max-width: 75px;
+  padding-right: 12px;
 }
 
 .logo__text {
+
+  padding-right: 8px;
   font-size: 10px;
   max-width: 75px;
   background: #57a41c;
@@ -345,6 +357,7 @@ img {
   background-clip: text;
   color: transparent;
 }
+
 
 
 
