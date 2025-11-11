@@ -317,13 +317,9 @@ footer a {
   text-decoration: underline;
 }
 
-.my__logo {
-  /* background-color: white; */
-}
-
 img {
-  max-width: 75px;
-  background-color: white;
+  max-width: 74px;
+  background-color: gold;
   border-radius: 50%;
   border: 2px solid blue;
 }
