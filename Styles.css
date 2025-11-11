@@ -299,8 +299,6 @@ body {
   justify-content: space-evenly;
 }
 
-
-
 /* Footer */
 footer {
   text-align: center;
@@ -310,9 +308,8 @@ footer {
   color: #9ca3af;
 }
 
-.footer__text{
+.footer__text {
   margin-right: 24px;
-
 }
 
 footer a {
@@ -322,7 +319,6 @@ footer a {
 
 .my__logo {
   /* background-color: white; */
-  
 }
 
 img {
@@ -333,8 +329,6 @@ img {
 }
 
 .logo__text {
-
-  
   font-size: 10px;
   padding-right: 28px;
   background: #57a41c;
@@ -353,13 +347,7 @@ img {
   background: linear-gradient(135deg, #57a41c 0%, #5933cb 50%, #becdcf 100%);
   background-clip: text;
   color: transparent;
-  
 }
-
-
-
-
-
 
 /* Holo Checkbox - Custom styles copied from original HTML */
 :root {
