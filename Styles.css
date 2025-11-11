@@ -312,6 +312,7 @@ footer {
 
 .footer__text{
   margin-right: 24px;
+
 }
 
 footer a {
@@ -320,26 +321,22 @@ footer a {
 }
 
 .my__logo {
-  max-width: 90px;
-  filter: invert();
-  background-color: white;
-  border-radius: 12px;
-  margin-left: 38px;
-  padding: 12px;
-  border-radius: 12px;
+  /* background-color: white; */
   
 }
 
 img {
   max-width: 75px;
-  padding-right: 12px;
+  background-color: white;
+  border-radius: 50%;
+  border: 2px solid blue;
 }
 
 .logo__text {
 
-  padding-right: 8px;
+  
   font-size: 10px;
-  max-width: 75px;
+  padding-right: 28px;
   background: #57a41c;
   background: -moz-linear-gradient(
     -45deg,
@@ -356,7 +353,10 @@ img {
   background: linear-gradient(135deg, #57a41c 0%, #5933cb 50%, #becdcf 100%);
   background-clip: text;
   color: transparent;
+  
 }
+
+
 
 
 
