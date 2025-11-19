@@ -13,6 +13,7 @@
 
 .input-field {
   width: 100%;
+  max-width: 574px;
   padding: 0.75rem 1rem;
   border: 1px solid #3c4250;
   border-radius: 0.5rem;
@@ -79,6 +80,8 @@ body {
   font-weight: bold;
   text-align: center;
   margin-bottom: 2rem;
+  color: #92d0ff;
+  text-shadow: 2px 4px 4px gold;
 }
 
 .section-title {
@@ -103,6 +106,17 @@ body {
 
 .input-field {
   width: 100%;
+  max-width: 578px;
+  padding: 0.75rem;
+  background-color: #1e2a4a;
+  border: 1px solid #33415c;
+  border-radius: 0.5rem;
+  color: #ffffff;
+}
+
+.input-field1 {
+  width: 100%;
+  max-width: 554px;
   padding: 0.75rem;
   background-color: #1e2a4a;
   border: 1px solid #33415c;
@@ -130,6 +144,7 @@ body {
 /* Buttons */
 .button {
   width: 100%;
+  max-width: 580px;
   padding: 0.75rem;
   border-radius: 0.5rem;
   background-color: #2e88a3;
@@ -158,6 +173,7 @@ body {
   border-radius: 0.5rem;
   padding: 1rem;
   margin-bottom: 1.5rem;
+  box-shadow: 2px 2px 8px gold;
 }
 
 .trailer-item {
@@ -297,6 +313,7 @@ body {
 .counts {
   display: flex;
   justify-content: space-evenly;
+  text-shadow: 2px 4px 4px gold;
 }
 
 /* Footer */
@@ -310,11 +327,7 @@ footer {
 
 .footer__text {
   margin-right: 24px;
-}
-
-footer a {
-  color: white;
-  text-decoration: underline;
+  text-shadow: 2px 4px 4px gold;
 }
 
 img {
@@ -322,23 +335,24 @@ img {
   background-color: gold;
   border-radius: 50%;
   border: 2px solid blue;
+  box-shadow: 2px 2px 8px gold;
 }
 
 .logo__text {
-  font-size: 10px;
-  padding-right: 28px;
+  text-shadow: 2px 4px 12px gold;
+  color: gold;
+  font-size: 14px;
+  padding-right: 18px;
   background: #57a41c;
   background: -moz-linear-gradient(
     -45deg,
     #57a41c 0%,
     #5933cb 50%,
-    #becdcf 100%
+    #becdcf 100%;
   );
   background: -webkit-linear-gradient(
     -45deg,
-    #57a41c 0%,
-    #5933cb 50%,
-    #becdcf 100%
+    #57a41c: 0%; #5933cb: 50%; #becdcf: 100%;
   );
   background: linear-gradient(135deg, #57a41c 0%, #5933cb 50%, #becdcf 100%);
   background-clip: text;
