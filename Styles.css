@@ -98,6 +98,11 @@ body {
   margin-bottom: 1.5rem;
 }
 
+.input-group1{
+  max-width: 352px;
+  margin-bottom: 1.5rem;
+}
+
 .input-label {
   display: block;
   margin-bottom: 0.5rem;
@@ -114,14 +119,7 @@ body {
   color: #ffffff;
 }
 
-#trailer-number {
-  width: 50%;
-  padding: 0.75rem;
-  background-color: #1e2a4a;
-  border: 1px solid #33415c;
-  border-radius: 0.5rem;
-  color: #ffffff;
-}
+
 
 /* .radio-group, */
 .checkbox-group {
